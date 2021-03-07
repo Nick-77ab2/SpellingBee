@@ -1,0 +1,81 @@
+#wButtons{
+    padding-top:35vh;
+    width:90vw;
+    margin:auto;
+}
+
+.wButtons{
+    width:70vw;
+    margin:auto;
+    padding-top:4vh;
+}
+
+#wButtons img{
+    height:8vh;
+    width:90vw;
+    margin:auto;
+}
+
+div.ui-page.ui-page-theme-a.ui-page-active{
+	background-color: #ffe87c;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#footer{
+    position:fixed;
+    bottom:0px;
+    left:0px;
+    width:100vw;
+}
+
+.form2.ui-field-contain{
+    padding-top:30%;
+    width:80%;
+    margin:auto;
+}
+
+.form1.ui-field-contain{
+    padding-top:30%;
+    width:80%;
+    margin:auto;
+}
+
+#logIn.ui-popup.ui-body-inherit.ui-overlay-shadow.ui-corner-all{
+    height: 60vh;
+    width: 80vw;
+    background-color: #e6e6e6;
+}
+
+#confirm{
+    width:60vw;
+    margin:auto;
+    padding-top:4vh;
+}
+
+.ui-page{
+    background: black;
+}
+
+.head{
+    height: 8vh;
+    text-align: center;
+    font-size: 5vh;
+    line-height: 8vh;
+}
+.back.ui-link.ui-btn-left.ui-btn.ui-shadow.ui-corner-all{
+    margin-top:1vh;
+    margin-left:2vw;
+    height:5vh;
+    width:9vw;
+    padding:0px 2vw;
+    border:0;
+}
+.back.ui-link.ui-btn-left.ui-btn.ui-shadow.ui-corner-all img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4vw;
+    height: 2vh;
+    margin-top: -1vh; /* Half the height */
+    margin-left: -2vw; /* Half the width */
+}

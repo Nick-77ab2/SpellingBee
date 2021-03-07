@@ -1,0 +1,61 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Miniqurith</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi">
+    <!-- SET THE TAB ICON: <link rel="icon" type="image/png" sizes="64x64" href=""> -->
+    <!-- SET THE APP ICON <link rel="" sizes="180x180" href=""> -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css"/>
+    <link rel="stylesheet" href="main.css"/>
+    <script src="jquery.mobile-1.4.5/jquery-1.11.1.min.js"></script>
+    <script src="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="jquery.validate.min.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <div data-role="page" id="welcome">
+        <div id="wButtons">
+            <div><img src="themes/images/custom/page1-01.png"></div>
+            <div class="wButtons">
+                <a href="#logIn" data-rel="popup" class="ui-btn ui-corner-all">Log In</a>
+                <a href="#signUp" class="ui-btn ui-corner-all">Sign Up</a>
+            </div>
+            <div data-role="popup" id="logIn">
+                <div class="head" data-role="header">
+                    <a class="back" href="#welcome"><img src="themes/images/icons-png/carat-l-black.png"></a>
+                    Log In
+                </div>
+                <form id="logInForm" class="form2 ui-field-contain ui-field-contain">
+                    <input id="username" type="text" placeholder="username" data-clear-btn="true"/>
+                    <input id="pass" type="password" placeholder="Password" data-clear-btn="true"/>
+                
+                    <div id="confirm">
+                        <a id="logInBtn" class="ui-btn ui-corner-all">Log In</a>
+                    </div>
+                </form>
+                <img id="footer" src="themes/images/custom/page3-11.png">
+            </div>
+        </div>
+        <img id="footer" src="themes/images/custom/page3-11.png">
+    </div>
+    <div data-role="page" id="signUp">
+        <div class="head" data-role="header">
+            <a class="back" href="#welcome"><img src="themes/images/icons-png/carat-l-black.png"></a>
+            Sign Up
+        </div>
+        <form id="signUpForm" class="form1 ui-field-contain ui-field-contain">
+            <input id="user" type="text" placeholder="Username" data-clear-btn="true"/>
+            <input id="pass1" type="password" placeholder="Password" data-clear-btn="true"/>
+            <input id="pass2" type="password" placeholder="Re-Enter" data-clear-btn="true"/>
+            <div id="confirm">
+                <a id="signUpBtn" class="ui-btn ui-corner-all">Sign Up!</a>
+            </div>
+        </form>
+        <img id="footer" src="themes/images/custom/page3-11.png">
+    </div>
+
+
+  </body>
+</html>
