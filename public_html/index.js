@@ -12,8 +12,7 @@ $(document).ready(function() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: ((!userField.includes("@"))?userField:""),
-                    email: ((userField.includes("@"))?email:""),
+                    username: userField,
                     password: pass
                     }),
                 }).then(function(res){
@@ -47,6 +46,7 @@ $(document).ready(function() {
                         console.log("success");
                         window.location.pathname = '/game'
                     } else {
+                        alert("Username must be 4-15 characters\nPassword must have 6-24 characters\nPasswords Must Match");
                         console.log("Bad Request");
                     }
                 }).catch((error) => {console.log(error)});

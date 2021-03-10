@@ -1,17 +1,16 @@
 #wButtons{
-    padding-top:35vh;
+    padding-top:20vh;
     width:90vw;
     margin:auto;
 }
 
 .wButtons{
-    width:70vw;
+    width:40vw;
     margin:auto;
-    padding-top:4vh;
+    padding-top:8vh;
 }
 
 #wButtons img{
-    height:8vh;
     width:90vw;
     margin:auto;
 }
@@ -29,27 +28,39 @@ div.ui-page.ui-page-theme-a.ui-page-active{
 }
 
 .form2.ui-field-contain{
-    padding-top:30%;
+    padding-top:5%;
     width:80%;
     margin:auto;
 }
 
 .form1.ui-field-contain{
-    padding-top:30%;
+    padding-top:5%;
     width:80%;
     margin:auto;
 }
 
-#logIn.ui-popup.ui-body-inherit.ui-overlay-shadow.ui-corner-all{
-    height: 60vh;
-    width: 80vw;
+.ui-popup.ui-body-inherit.ui-overlay-shadow.ui-corner-all{
+    height: 50vh;
+    width: 40vw;
+    top: -10vh;
     background-color: #e6e6e6;
 }
 
+#signUp.ui-popup.ui-body-inherit.ui-overlay-shadow.ui-corner-all{
+    top: -10vh;
+    height: 60vh;
+}
+
 #confirm{
-    width:60vw;
+    width:60%;
     margin:auto;
     padding-top:4vh;
+}
+
+#signUpBtn{
+    width:60%;
+    margin:auto;
+    padding-top:2vh;
 }
 
 .ui-page{
@@ -57,25 +68,23 @@ div.ui-page.ui-page-theme-a.ui-page-active{
 }
 
 .head{
-    height: 8vh;
+    height: 10vh;
     text-align: center;
     font-size: 5vh;
-    line-height: 8vh;
+    line-height: 10vh;
 }
 .back.ui-link.ui-btn-left.ui-btn.ui-shadow.ui-corner-all{
-    margin-top:1vh;
-    margin-left:2vw;
-    height:5vh;
-    width:9vw;
-    padding:0px 2vw;
+    margin-top:2%;
+    margin-left:2%;
+    height:60%;
+    width:15%;
+    padding:0px;
+    line-height: 50%;
     border:0;
 }
 .back.ui-link.ui-btn-left.ui-btn.ui-shadow.ui-corner-all img{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 4vw;
-    height: 2vh;
-    margin-top: -1vh; /* Half the height */
-    margin-left: -2vw; /* Half the width */
+    margin:auto;
+    margin-top:15%;
+    max-width: 90%;
+    max-height: 90%;
 }

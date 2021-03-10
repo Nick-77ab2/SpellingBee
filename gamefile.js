@@ -8,10 +8,7 @@ const axios = require("axios");
 const websocket = require("ws"); 
 
 app = express();
-
-const port = 3000;
-const hostname = "localhost";
-
+//port=3000
 app.use(express.json());
 
 let wordPool, word;
@@ -108,10 +105,6 @@ function _lev(a, b){
 	]);
 }
 */
-
-app.listen(port, hostname, () => {
-    console.log(`Listening at: http://${hostname}:${port}`);
-});
 
 /* 
 
