@@ -1,22 +1,30 @@
 /* 
 right now only for single player part, websocket/ multiplayer will be resolved next week 
-
+status: websocket is implemented, available interaction:
+	send definition,
+	check answer
+	
+plan: since it's multiplayer, the entire game would be hosted serverside, so:
+	a timer for each question,
+	broadcast when somebody disconnects,
+	keeping track of scores
 */
 
 const express = require("express");
 const axios = require("axios");
-const websocket = require("ws"); 
+const websocket = require("ws").Server; 
 
 app = express();
 //port=3000
 app.use(express.json());
 
-let wordPool, word;
+let wordPool, word, exampleSentence, definition = "";
 let difficulty, amount;
 let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
 
 //test word pool
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
+setNextWord();
 app.get("/singleplayer", function (req, res){
 	diff = req.query.difficulty;
 	amount = req.query.amount;
@@ -47,24 +55,11 @@ app.get("/nextword", function (req, res){
 });
 
 app.get("/definition", function (req, res){
-	var options = {
-	  method: 'GET',
-	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
-	  headers: {
-		'x-rapidapi-key': 'dc87df349dmshdec7c11cbfce208p18ad3bjsn6b8b45632120',
-		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
-	  }
-	};
+	res.json({definition: definition});
+});
 
-	axios.request(options).then(function (response) {
-		console.log(response.data);
-		if (response.data.results == null){
-			throw "no definition";
-		}
-		res.json({definition: response.data.results[0].definition});
-	}).catch(function (error) {
-		res.json({definition: "not available"});
-	});
+app.get("/example", function (req, res){
+	res.json({example: exampleSentence});
 });
 
 function getWordPool(){
@@ -77,37 +72,84 @@ function getWordPool(){
 
 function setNextWord(){
 	word = wordPool.shift();
+	
+	//get data features
+	var options = {
+	  method: 'GET',
+	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+	  headers: {
+		'x-rapidapi-key': 'dc87df349dmshdec7c11cbfce208p18ad3bjsn6b8b45632120',
+		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
+	  }
+	};
+
+	axios.request(options).then(function (response) {
+		console.log(response.data.results[0].examples);
+		if (response.data.results == null){
+			throw "no definition";
+		}
+		definition = response.data.results[0].definition;
+		exampleSentence = response.data.results[0].examples[0];
+	}).catch(function (error) {
+		definition = "not available";
+		console.log(`no definition for word '${word}' available`);
+	});
+
 }
 
-/*
-function calculatePoints(answer){
-	percentage = _lev(answer, word);
-	return percentage * difficulty; //TODO: truncate to int
-}
+app.listen(port, hostname, () => {
+    console.log(`Listening at: http://${hostname}:${port}`);
+});
 
+//=============================Web Socket portion======================================
+//status: right
+const wsServer = new websocket({
+	port: 80
+});
 
-function _lev(a, b){
-	//levenshtein distance, returns the edit distance between the two words 
-	function tail(word){
-		return word.substring(1, word.length)
+wsServer.on('connection', function (ws){
+	ws.on('message', function (message){
+		console.log('received: %s', message);
+		let command = JSON.parse(message);
+		data = execute(command);
+		
+		ws.send(JSON.stringify(data)); 
+	});
+});
+
+function execute(command){
+	var data = {};
+	if (command.type == "help"){
+		switch (command.data) {
+			case "definition":
+				data.type = "definition";
+				data.data = definition;
+				break;
+			case "exampleSen":
+				data.type = "exampleSen";
+				data.data = exampleSentence;
+				break;
+			default:
+				data.type = "wut";
+				data.data = "";
+				break;
+		}
 	}
 	
-	if (a.length = 0) return b.length;
-	if (b.length = 0) return a.length;
-	if (a[0] = b[0]){
-		return _lev(tail(a), tail(b));
+	if (command.type == "answer"){
+		data.type = "answerCheck"
+		if (command.data == word){
+			data.data =  "correct";
+		}
+		data.data = "not correct";
 	}
-
-	return Math.min([
-		_lev(tail(a), b),
-		_lev(a, tail(b)),
-		_lev(tail(a), tail(b))
-	]);
+	
+	return data;
 }
+<<<<<<< HEAD
 */
 
 /* 
+=======
+>>>>>>> f6e066f (add basic websocket server and client)
 
-// URL format: wordsapiv1.p.rapidapi.com/words/%7B${word}%7D
-// stop users from overaccessing the database.
-*/
