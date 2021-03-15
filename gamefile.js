@@ -15,7 +15,8 @@ const axios = require("axios");
 const websocket = require("ws").Server; 
 
 app = express();
-//port=3000
+hostname = "localhost";
+port = 3000;
 app.use(express.json());
 
 let wordPool, word, exampleSentence, definition = "";
@@ -78,7 +79,7 @@ function setNextWord(){
 	  method: 'GET',
 	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
 	  headers: {
-		'x-rapidapi-key': 'dc87df349dmshdec7c11cbfce208p18ad3bjsn6b8b45632120',
+		'x-rapidapi-key': '9911185b87msh3626b8edbef5d2fp18ab6djsn1f010e49de4d',
 		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
 	  }
 	};
