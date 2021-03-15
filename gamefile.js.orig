@@ -102,6 +102,7 @@ app.listen(port, hostname, () => {
 });
 
 //=============================Web Socket portion======================================
+//status: right
 const wsServer = new websocket({
 	port: 80
 });
@@ -145,5 +146,10 @@ function execute(command){
 	
 	return data;
 }
+<<<<<<< HEAD
+*/
 
+/* 
+=======
+>>>>>>> f6e066f (add basic websocket server and client)
 
