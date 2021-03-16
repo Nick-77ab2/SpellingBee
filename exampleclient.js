@@ -8,7 +8,7 @@ sendAnswer(answer): server will broadcast a JSON like this to all clients {type:
 */
 
 url = 'ws://localhost:80' //url of server here
-var connection = new WebSocket('ws://localhost:80');
+var connection = new WebSocket(url);
 
 connection.onopen = function(){
 	console.log('successfully connected to ' + url);

@@ -24,7 +24,7 @@ const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.
 
 app = express();
 hostname = "localhost";
-port = 3000;
+port = 8000;
 app.use(express.json());
 
 let wordPool, word, exampleSentence, definition = "";
@@ -195,9 +195,6 @@ function execute(command){
 		}
 		data.data = "not correct";
 	}
-	
-	
-	
 	return data;
 }
 
