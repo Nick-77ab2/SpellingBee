@@ -12,7 +12,15 @@ plan: since it's multiplayer, the entire game would be hosted serverside, so:
 
 const express = require("express");
 const axios = require("axios");
-const websocket = require("ws").Server; 
+const websocket = require("ws"); 
+const env = require('./env.json');
+const MongoClient = require('mongodb').MongoClient;
+
+const mongo_username = env.MONGO_USERNAME;
+const mongo_password = env.MONGO_PASSWORD;
+const api_key = env.API_KEY;
+const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.7ykyi.mongodb.net/spelling_bee?retryWrites=true&w=majority`;
+
 
 app = express();
 hostname = "localhost";
@@ -23,19 +31,29 @@ let wordPool, word, exampleSentence, definition = "";
 let difficulty, amount;
 let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
 
+
+//=====================DB managing stuff=========================================
+/* all the DB managing functions and handles such as adding, deleting, changing DB should be implemented here */
+
+
+
+
+//==================Singleplayer stuff===========================================
 //test word pool
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
-setNextWord();
+//setNextWord();
 app.get("/singleplayer", function (req, res){
 	diff = req.query.difficulty;
-	amount = req.query.amount;
+	amount = parseInt(req.query.amount);
 	
 	if (req.query.hasOwnProperty("difficulty") && req.query.hasOwnProperty("amount")){
 	}
 	difficulty = diffMult[diff];
 	// TODO: query the wordpool
-	wordPool = getWordPool();
+	wordPool = getWordPool(diff, amount);
+	console.log(wordPool); 
 	setNextWord();
+	res.send();
 });
 
 app.get("/answer", function(req, res){
@@ -63,12 +81,35 @@ app.get("/example", function (req, res){
 	res.json({example: exampleSentence});
 });
 
-function getWordPool(){
-	//query from mongoDB
+function getWordPool(difficulty, amount){
+	// query from mongoDB
 	// randomize the array also
 	
+	let result = [];
 	
-	return []; // should return an array of words
+	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
+	let level = "easy";
+	
+	client.connect(function (error){
+		const wordsCollection = client.db('spelling_bee').collection('words');
+		// randomly grab from database
+		wordsCollection.aggregate([
+                { $match: { "difficulty": difficulty } },
+                { $sample: { size: 10 } },
+                { $project: { "word": 1, "_id": 0 } },
+            ]).toArray()
+                .then(function (data) {
+                    data.forEach(function (value, index) {
+						result.push({ word: value.word });
+                    });
+                    console.log(result);
+                })
+                .catch(function (error) {
+                    console.log("error");
+                });
+	});
+	
+	return result; // should return an array of words
 }
 
 function setNextWord(){
@@ -103,11 +144,22 @@ app.listen(port, hostname, () => {
 });
 
 //=============================Web Socket portion======================================
-const wsServer = new websocket({
+const wsServer = new websocket.Server({
 	port: 80
 });
+let count = 0;
 
 wsServer.on('connection', function (ws){
+	incCount();
+	userid = count;
+	//broadcast whenever new player join
+	wsServer.clients.forEach(function each(client){
+		console.log(websocket.OPEN);
+		if (client.readyState === websocket.OPEN) {
+			client.send(JSON.stringify({type: "broadcast", data: `Player ${userid} has joined`}));
+		};
+	});
+	
 	ws.on('message', function (message){
 		console.log('received: %s', message);
 		let command = JSON.parse(message);
@@ -144,7 +196,14 @@ function execute(command){
 		data.data = "not correct";
 	}
 	
+	
+	
 	return data;
 }
 
-
+function incCount(){
+	count++;
+	if (count > 3) {
+		count = 0;
+	}
+}

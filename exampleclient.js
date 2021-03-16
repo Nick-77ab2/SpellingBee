@@ -30,7 +30,11 @@ connection.onmessage = function (message) {
 			//TODO: change the following console.log to the correct command (display it in some HTML element)
 			console.log(data.data);
 			break;
+		case "broadcast":
+			console.log(data.data);
+			break;
 		default:
+			console.log("something went wrong");
 			break;
 	}
 };
