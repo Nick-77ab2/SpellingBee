@@ -22,7 +22,7 @@ window.onload=function(){
 };
 
 url = 'ws://localhost:8080' //url of server here
-var connection = new WebSocket('ws://localhost:8080');
+var connection = new WebSocket(url);
 
 connection.onopen = function(){
 	console.log('successfully connected to ' + url);
@@ -46,10 +46,20 @@ connection.onmessage = function (message) {
 		case "exampleSen":
 			wordSentence=data.data;
 			console.log(data.data);
+      document.getElementById('timer').innerHTML = 005 + ":" + 01;
+      startTimer();
 			break;
 		case "answerCheck":
-			//TODO: create variable for letting them know if they got it right or not.
-			console.log(data.data);
+      let isCorrect=data.data;
+      if(isCorrect){
+			  let test=theScore.textContent;
+        gainedPoints.style.visibility="visible";
+        setTimeout(() => { gainedPoints.style.visibility="hidden" }, 2000);
+        test=parseInt(test);
+        test+=10;
+        theScore.textContent=test;
+			  console.log(data.data);
+      }
 			break;
 		case "broadcast":
 			console.log(data.data);
@@ -77,14 +87,7 @@ let enterButton=document.getElementById("userEnter");
 enterButton.addEventListener("click", function(e){
   if(!alreadyCorrect){
     let userAnswer=document.getElementById("userAnswer").value;
-    if(String(userAnswer)==word){
-      let test=theScore.textContent;
-      alreadyCorrect=true;
-      gainedPoints.style.visibility="visible";
-      setTimeout(() => { gainedPoints.style.visibility="hidden" }, 2000);
-      test=parseInt(test);
-      test+=10;
-      theScore.textContent=test;
+
   }
 }
 });
@@ -131,10 +134,6 @@ function startTimer(){
   if(m==0 && s=="00"){
     timerComplete=true; //used to end word with noone getting it right.
     document.getElementById('timer').innerHTML= m + ":" + s;
-    let test=theScore.textContent;
-    test=parseInt(test);
-    test+=10;
-    theScore.textContent=test;
     return null;
   }
   document.getElementById('timer').innerHTML= m + ":" + s;
@@ -150,7 +149,9 @@ function checkSecond(sec){
   }
   return sec;
 }
-/*
+
+/* <============EXAMPLE JQUERY CODE========================>
+
 $(document).ready(function() {
     $( ".items pop_up, .items pop_up *" ).dialog( "close" );
     $("#showMeaning").click((e)=>{
