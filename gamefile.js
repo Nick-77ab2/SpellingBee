@@ -10,7 +10,6 @@ plan: since it's multiplayer, the entire game would be hosted serverside, so:
 	keeping track of scores
 */
 
-const express = require("express");
 const axios = require("axios");
 const websocket = require("ws"); 
 const env = require('./env.json');
@@ -22,64 +21,53 @@ const api_key = env.API_KEY;
 const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.7ykyi.mongodb.net/spelling_bee?retryWrites=true&w=majority`;
 
 
-app = express();
-hostname = "localhost";
-port = 8000;
-app.use(express.json());
-
 let wordPool, word, exampleSentence, definition = "";
 let difficulty, amount;
 let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
 
-
-//=====================DB managing stuff=========================================
-/* all the DB managing functions and handles such as adding, deleting, changing DB should be implemented here */
-
-
-
-
-//==================Singleplayer stuff===========================================
 //test word pool
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
-//setNextWord();
-app.get("/singleplayer", function (req, res){
-	diff = req.query.difficulty;
-	amount = parseInt(req.query.amount);
-	
-	if (req.query.hasOwnProperty("difficulty") && req.query.hasOwnProperty("amount")){
-	}
-	difficulty = diffMult[diff];
-	// TODO: query the wordpool
-	wordPool = getWordPool(diff, amount);
-	console.log(wordPool); 
-	setNextWord();
-	res.send();
+
+const wsServer = new websocket.Server({
+	port: 80
 });
 
-app.get("/answer", function(req, res){
-	let answer = req.query.answer;
-	
-	if (word == answer){
-		setNextWord();
-		res.json({correct: true, nextWord: word});
+let currentPlayers = {};
+let userid = 0; //TODO: integrate with user logging feature
+wsServer.on('connection', function (ws){
+	console.log(Object.keys(currentPlayers).length);
+	if (Object.keys(currentPlayers).length == 3){
+		ws.send(JSON.stringify({type: "broadcast", data: "maximum amount of players (3 players) reached, no more connection will be allowed"}));
+		ws.terminate();
 		return;
 	}
 	
-	res.json({correct: false});
+	
+	userid++; //TODO: integrate with user logging feature
+	currentPlayers[userid] = ws;
+	//broadcast whenever new player join
+	broadcast(`Player ${userid} joined`);
+	
+	ws.on('message', function (message){
+		console.log('received: %s from %s', message);
+		let command = JSON.parse(message);
+		data = execute(command);
+		
+		ws.send(JSON.stringify(data)); 
+	});
 });
 
-app.get("/nextword", function (req, res){
-	setNextWord();
-	res.send({word: word});
-});
-
-app.get("/definition", function (req, res){
-	res.json({definition: definition});
-});
-
-app.get("/example", function (req, res){
-	res.json({example: exampleSentence});
-});
+function broadcast(message, isNewWord = false){
+	let type = "broadcast";
+	if (isNewWord){
+		type = "newWord";
+	}
+	wsServer.clients.forEach(function each(client){
+		if (client.readyState === websocket.OPEN) {
+			client.send(JSON.stringify({type: type, data: message}));
+		};
+	});
+}
 
 function getWordPool(difficulty, amount){
 	// query from mongoDB
@@ -126,48 +114,51 @@ function setNextWord(){
 	};
 
 	axios.request(options).then(function (response) {
-		console.log(response.data.results[0].examples);
+		let error = {definition: false, example: false};
+		let isError = false;
 		if (response.data.results == null){
-			throw "no definition";
+			isError = true;
+			error.defintion =  true;
+			error.example = true;
 		}
-		definition = response.data.results[0].definition;
-		exampleSentence = response.data.results[0].examples[0];
+		
+		if (response.data.results[0].defintion == null) {
+			isError = true;
+			error.defintion =  true;
+		}
+		
+		if (response.data.results[0].examples == null){
+			isError = true;
+			error.example =  true;
+		}
+		
+		if (!error.defintion){
+			definition = response.data.results[0].definition;
+		}
+		
+		if (!error.example){
+			exampleSentence = response.data.results[0].examples[0];
+		}
+		
+		if (isError){
+			throw error;
+		}
 	}).catch(function (error) {
-		definition = "not available";
-		console.log(`no definition for word '${word}' available`);
-	});
-
-}
-
-app.listen(port, hostname, () => {
-    console.log(`Listening at: http://${hostname}:${port}`);
-});
-
-//=============================Web Socket portion======================================
-const wsServer = new websocket.Server({
-	port: 80
-});
-let count = 0;
-
-wsServer.on('connection', function (ws){
-	incCount();
-	userid = count;
-	//broadcast whenever new player join
-	wsServer.clients.forEach(function each(client){
-		console.log(websocket.OPEN);
-		if (client.readyState === websocket.OPEN) {
-			client.send(JSON.stringify({type: "broadcast", data: `Player ${userid} has joined`}));
-		};
+		if (error.definition){
+			definition = "not available";
+			console.log(`no definition for word '${word}' available`);
+		}
+		
+		if (error.example){
+			exampleSentence = "not available";
+			console.log(`no example sentence for word '${word}' available`);
+		}
+		
 	});
 	
-	ws.on('message', function (message){
-		console.log('received: %s', message);
-		let command = JSON.parse(message);
-		data = execute(command);
-		
-		ws.send(JSON.stringify(data)); 
-	});
-});
+	//broadcast for all players to know
+	broadcast(word, true);
+}
 
 function execute(command){
 	var data = {};
@@ -175,10 +166,20 @@ function execute(command){
 		switch (command.data) {
 			case "definition":
 				data.type = "definition";
+				if (definition == ""){
+					data.available = false;
+				} else {
+					data.available = true;
+				}
 				data.data = definition;
 				break;
 			case "exampleSen":
 				data.type = "exampleSen";
+				if (definition == ""){
+					data.available = false;
+				} else {
+					data.available = true;
+				}
 				data.data = exampleSentence;
 				break;
 			default:
@@ -191,9 +192,10 @@ function execute(command){
 	if (command.type == "answer"){
 		data.type = "answerCheck"
 		if (command.data == word){
-			data.data =  "correct";
+			data.data =  true;
+			setNextWord();
 		}
-		data.data = "not correct";
+		data.data = false;
 	}
 	return data;
 }
