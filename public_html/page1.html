@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>first Page</title>
+  <link rel="stylesheet" href="styles_pg1.css">
+</head>
+
+<body style="background-color:#000;">
+  <div class="pg1_center">
+    <p class="pg1_text">A project of</p>
+    <img src="./themes/images/custom/page1-01.png" alt="logo" class="pg1_img1">
+    <img id="picture_hide" src="./themes/images/custom/page1-02.png" alt="tutorial" class="pg1_img1" style="width:80%"
+      onclick="showVideo();">
+  </div>
+
+  <div id="load_video" class="wrap_video" style="display:none">
+    <div class="video_wrapper">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/ayvL-aFxJZw" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+
+      <form action="page2.html">
+        <!-- <input type="submit" value="Go to the page 2" /> -->
+        <p>Go to page 2</p>
+        <button type="submit" class="btn_transparent">
+          <img src="./themes/images/custom/page3-10.png" alt="Go to the next page" class="img_button">
+      </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script_pg1.js" type="text/javascript"></script>
+
+</body>
+
+</html>

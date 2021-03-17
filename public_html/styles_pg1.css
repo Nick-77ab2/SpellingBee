@@ -1,0 +1,68 @@
+.pg1_center {
+  margin: auto;
+  padding: 10px;
+  width: 50%;
+  margin-top: 50px;
+}
+
+.pg1_text {
+  color:white;
+  font-size: 35px;
+  font-family: arial;
+  text-align: center;
+}
+
+.pg1_img1 {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+pg2_body{
+  background-color: #ffe87c;
+}
+
+pg2_footer{
+  position: absolute;
+	bottom: 0;
+	height: 130px;
+	width: 100%;
+}
+
+.wrap_video {
+  margin: 0 auto;
+  width: 80%;
+}
+
+.video_wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top:25px;
+}
+
+.video_wrapper iframe {
+  position: absolute;
+  margin: 0 auto;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  width: 80%;
+  height: 80%;
+}
+
+.btn_transparent {
+	background: transparent;
+	cursor: pointer;
+	outline: none;
+	border: none;
+}
+
+.img_button {
+  position: absolute;
+  bottom: 150px;
+  right: 0px;
+  width: 10%;
+}

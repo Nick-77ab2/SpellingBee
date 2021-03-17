@@ -29,7 +29,7 @@ app.get('/', function(req, res) {
 // TODO: THIS HAS TO USE SESSION COOKIES FOR USER TRACKING
 // TODO: COOKIES WILL BE ISSUED ON LOG IN AND SIGN UP
 app.get('/game', function(req,res){
-	res.status(200).sendFile(__dirname + "/public_html/game.html");
+	res.status(200).sendFile(__dirname + "/public_html/page1.html");
 });
 
 // Promise based bug free version

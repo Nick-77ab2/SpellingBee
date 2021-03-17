@@ -145,7 +145,7 @@ app.listen(port, hostname, () => {
 
 //=============================Web Socket portion======================================
 const wsServer = new websocket.Server({
-	port: 80
+	port: 8080
 });
 let count = 0;
 

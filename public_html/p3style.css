@@ -1,0 +1,278 @@
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+body {
+	font-size: 62.5%;
+	background-color: #ffe87c;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+	display: flex;
+	align-items: center;
+}
+
+.grid-game {
+	display: grid;
+	grid-template-columns: 100%;
+	grid-template-rows: 35% repeat(3, 11.67%);
+	height: 100vh;
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: 15% 15% 40% 15% 15%;
+	grid-template-rows: 15% 70% 15%;
+	height: 100vh;
+}
+
+.grid-button {
+	display: grid;
+	grid-template-columns: repeat(4, 25%);
+	grid-template-rows: repeat(7, 10%);
+	height: 100vh;
+}
+
+.items {
+	/* border: 1px solid black; */
+	text-align: center;
+}
+
+.meaning_popup {
+	display: inline-grid;
+	margin-top: 4%;
+	width: 90%;
+	height: 80%;
+	background: white;
+	border-radius: 20px;
+}
+
+.game_screen {
+	display: inline-grid;
+	justify-content: center;
+	align-content: center;
+	margin-top: 3%;
+	width: 90%;
+	height: 80%;
+	background: white;
+	border-radius: 20px;
+}
+
+.game_info {
+	display: inline-grid;
+	justify-content: center;
+	align-content: center;
+	margin-top: 2%;
+	width: 90%;
+	height: 80%;
+	border-radius: 20px;
+	background: white;
+}
+
+.message {
+	margin-top: 3%;
+	text-align: center;
+	text-transform: uppercase;
+  visibility: hidden;
+}
+
+.hint,
+.meaning,
+.timer,
+.score {
+	display: grid;
+	grid-template-columns: 25% 75%;
+	grid-template-rows: 100%;
+}
+
+.btn_hint,
+.btn_meaning,
+.btn_timer,
+.btn_score,
+.btn_map {
+	margin-right: 3vw;
+	font-size: 1rem;
+	padding: 1vh 1.5vw;
+	font-weight: bold;
+	border-radius: 15px;
+	border: 2px solid black;
+	box-shadow: 5px 10px 20px rgba(240, 179, 13, 0.4);
+}
+
+.level {
+	display: inline-grid;
+}
+
+.what_level {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-size: 2em;
+}
+
+.thumbnail {
+	position: relative;
+	display: inline-block;
+}
+
+.text_enter {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.show_meaning {
+	position: absolute;
+	top: 24%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+/* IMAGE*/
+.img_size {
+	width: 5vw;
+	height: 6vh;
+}
+
+.main_game {
+	grid-column-start: 3;
+	grid-column-end: 4;
+}
+
+.pop_up {
+	grid-column-start: 1;
+	grid-column-end: 3;
+  visibility: hidden;
+}
+
+.button_container {
+	grid-column-start: 4;
+	grid-column-end: 6;
+}
+
+.footer {
+	grid-column-start: 1;
+	grid-column-end: 6;
+}
+
+.next {
+	grid-column-start: 4;
+	grid-column-end: 5;
+	grid-row-start: 7;
+	grid-row-end: 8;
+}
+
+.replay {
+	grid-column-start: 4;
+	grid-column-end: 5;
+	grid-row-start: 6;
+	grid-row-end: 7;
+}
+
+.cancel {
+	grid-column-start: 4;
+	grid-column-end: 5;
+	grid-row-start: 5;
+	grid-row-end: 6;
+}
+
+.play {
+	grid-column-start: 4;
+	grid-column-end: 5;
+	grid-row-start: 4;
+	grid-row-end: 5;
+}
+
+.map {
+	grid-column-start: 4;
+	grid-column-end: 5;
+	grid-row-start: 3;
+	grid-row-end: 4;
+}
+
+.button_map {
+	grid-column-start: 3;
+	grid-column-end: 5;
+	grid-row-start: 3;
+	grid-row-end: 4;
+}
+
+.btn_map_resize {
+	margin-right: 5vw;
+	margin-top: 2vh;
+}
+
+.img_button {
+	width: 7vw;
+	height: 8vh;
+}
+
+.btn_transparent {
+	background: transparent;
+	cursor: pointer;
+	outline: none;
+	border: none;
+}
+
+.footer_img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.grid-popup {
+	display: grid;
+	grid-template-rows: 50% 20%;
+	grid-template-columns: 100%;
+	height: 100vh;
+}
+
+.btn_popup {
+	font-weight: bold;
+	padding: 5px 10px;
+	border-radius: 20px;
+	background: lightcoral;
+  visibility: visible;
+}
+
+.btn_popup:hover {
+	font-weight: bold;
+	padding: 5px 10px;
+	border-radius: 20px;
+	background: orangered;
+}
+
+/* POPUP */
+.img_button_close {
+	position: absolute;
+	right: 68%;
+	top: 16%;
+	width: 7vw;
+	height: 5vh;
+	cursor: pointer;
+}
+
+.img_level {
+	display: block;
+	margin: 0 auto;
+	width: 18vw;
+	height: 12vh;
+}
+
+.text_meaning {
+	font-size: 1.5em;
+}
