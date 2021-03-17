@@ -29,7 +29,7 @@ let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
 
 const wsServer = new websocket.Server({
-	port: 80
+	port: 8080
 });
 
 let currentPlayers = {};
