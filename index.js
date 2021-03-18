@@ -148,6 +148,12 @@ app.post('/login', function(req, res){
 	if(!req.body.hasOwnProperty("password"))
 		return res.status(401).send("UNAUTHORIZED");
 
+	//TODO: create 2 master account for quick login if your target testing is not the account database, delete this portion of code after finish
+	let masterAcc = ["master1", "master2"];
+	if (masterAcc.includes(dbquery.user_name)){
+		return res.status(200).redirect(302, '/game');
+	}
+
 	let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 	client.connect()
 	.then(client => {
@@ -209,14 +215,13 @@ server.listen(8080, function () {
 });
 
 wsServer.on('connection', function (ws){
-	console.log(Object.keys(currentPlayers).length);
 	if (Object.keys(currentPlayers).length > maxPlayers){
 		ws.send(JSON.stringify({type: "broadcast", data: `maximum amount of players (${maxPlayers} players) reached, no more connection will be allowed`}));
 		ws.terminate();
 		return;
 	}
 
-	if (Object.keys(currentPlayers).length == 3){
+	if (Object.keys(currentPlayers).length == maxPlayers){
 		startGameSession();
 	}
 	//broadcast whenever new player join
@@ -271,17 +276,26 @@ wsServer.on('connection', function (ws){
 			data.type = "gameData";
 			if (maxPlayers == 1) {// starting value, must be played with at least 2
 				difficulty = command.level; // then set it
-				maxPlayers = command.playerCount;
+				maxPlayers = parseInt(command.playerCount);
 				console.log(maxPlayers);
+				console.log(difficulty);
 			}
 			
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
+			console.log(currentPlayers[ws]);
+			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
 		}
 		ws.send(JSON.stringify(data)); 
 	});
+
+	ws.on('close', function () {
+		broadcast(`Player ${currentPlayers[ws]} has disconnected.`);
+	});
 });
+
+
 
 async function startGameSession(){
 	//broadcast for all players to know
@@ -290,6 +304,7 @@ async function startGameSession(){
 	setNextWord();
 	broadcast(word, true, null);
 	startTimer();
+	console.log("game start");
 }
 
 function startTimer(){
@@ -307,6 +322,7 @@ function closeGameSession(){
 	wordPool = [];
 	maxPlayers = 1;//impossible to play with 1 => best value to reset
 	difficulty = "" //mongoDB would return nothing
+	clearTimeout(timer);
 }
 
 function broadcast(message, isNewWord = false, userid = ""){
