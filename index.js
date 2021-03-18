@@ -1,4 +1,5 @@
 let express = require('express');
+let axios = require('axios');
 let bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const env = require('./env.json');
@@ -201,7 +202,6 @@ let availableDiff = ["easy", "medium", "hard"];
 const time = 31000;
 let timer;
 
-//test word pool
 wordPool = [];
 
 const { createServer } = require('http');
@@ -221,6 +221,8 @@ wsServer.on('connection', function (ws){
 		return;
 	}
 
+	console.log(Object.keys(currentPlayers).length);
+	currentPlayers[ws] = ""; //placeholder
 	if (Object.keys(currentPlayers).length == maxPlayers){
 		startGameSession();
 	}
