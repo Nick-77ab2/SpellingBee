@@ -10,7 +10,7 @@ var wordSentence;
 let currentLevel = document.getElementById("currentLevel");
 var level;
 var name;
-var playerCount=2; //test value
+var playerCount;
 var utterWord;
 var userid;
 var broadcastValue;
@@ -22,7 +22,7 @@ let gainedPoints = document.getElementById("gainedPoints");
 //<==========GRAB LEVEL FROM LOCALSTORAGE==============>
 window.onload = function() {
   level = localStorage.getItem("levelNumber");
-  //playerCount = localStorage.getItem("playerCount");
+  playerCount = localStorage.getItem("playerCount");
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
 };
@@ -33,10 +33,10 @@ var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION AND SEND THE LEVEL IMMEDIATELY=============>
 function convertLevel(level){
-  if(level===1){
+  if(level==="1"){
     return "easy";
   }
-  else if (level===2){
+  else if (level==="2"){
     return "medium";
   }
   else{
