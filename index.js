@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const env = require('./env.json');
-const gamefile= require('./gamefile.js');
+const websocket = require('./gamefile.js');
 let app = express();
 
 const MongoClient = require('mongodb').MongoClient;

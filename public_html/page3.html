@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page 3</title>
+    <title>Belling Bee</title>
     <link rel="stylesheet" href="p3style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
@@ -30,7 +30,7 @@
         <header class="items level">
             <div class="thumbnail">
                 <img class="img_level" src="./themes/images/custom/page3-13.png" alt="Current Level">
-                <span class="what_level" id="currentLevel">1</span>
+                <span class="what_level" id="currentLevel"></span>
             </div>
         </header>
 
@@ -73,7 +73,7 @@
                 </div>
                 <div class="items">
                     <div class="game_info">
-                      <input type="text"
+                      <input class="user_answer" type="text"
                       id="userAnswer"
                       value=""/>
                     </div>
@@ -95,24 +95,24 @@
         <div class="items button_container">
             <div class="grid-button">
                 <div class="items play">
-                    <button type="button" class="btn_transparent">
+                    <button type="button" id="play" class="btn_transparent">
                         <img src="./themes/images/custom/page3-07.png" alt="play" class="img_button">
                     </button>
                 </div>
                 <div class="items cancel">
-                    <button type="button" class="btn_transparent">
+                    <button id="cancel" type="button" class="btn_transparent">
                         <img src="./themes/images/custom/page3-08.png" alt="cancel" class="img_button">
                     </button>
                 </div>
                 <div class="items replay">
-                    <button type="button" class="btn_transparent">
+                    <button type="button" id="replay" class="btn_transparent">
                         <img src="./themes/images/custom/page3-09.png" alt="replay" class="img_button">
                     </button>
                 </div>
                 <div class="items next">
-                    <button type="button" class="btn_transparent">
-                        <img src="./themes/images/custom/page3-10.png" alt="next level" class="img_button">
-                    </button>
+                        <button type="submit" class="btn_transparent" id="next">
+                            <img src="./themes/images/custom/page3-10.png" alt="next level" class="img_button">
+                        </button>
                 </div>
             </div>
         </div>

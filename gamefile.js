@@ -29,7 +29,7 @@ let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
 
 const wsServer = new websocket.Server({
-	port: 8080
+	port: 3000
 });
 
 let currentPlayers = {};
@@ -108,7 +108,7 @@ function setNextWord(){
 	  method: 'GET',
 	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
 	  headers: {
-		'x-rapidapi-key': '9911185b87msh3626b8edbef5d2fp18ab6djsn1f010e49de4d',
+		'x-rapidapi-key': '3f616d31e1mshb18981600a15616p1c8930jsn55578da4e7b8',
 		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
 	  }
 	};

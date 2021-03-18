@@ -18,6 +18,7 @@ $(document).ready(function() {
                 }).then(function(res){
                     if(res.status === 200){
                         console.log("success");
+                        localStorage.setItem("username", userField);
                         window.location.pathname = '/game'
                     } else if(res.status === 401){
                         console.log("UNAUTHORIZED");
