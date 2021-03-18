@@ -266,7 +266,7 @@ wsServer.on('connection', function (ws){
 			}
 		}
 		
-		if (command.type == "level"){
+		if (command.type == "gameData"){
 			//only called once when the connection is made, so can act as a handler for broadcasting new players
 			data.type = "gameData";
 			if (maxPlayers == 1) {// starting value, must be played with at least 2
