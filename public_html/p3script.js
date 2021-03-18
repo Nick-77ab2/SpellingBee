@@ -77,7 +77,7 @@ connection.onmessage = function(message) {
       wordSentence = data.data;
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       console.log(data.data);
-      document.getElementById('timer').innerHTML = 005 + ":" + 01;
+      document.getElementById('timer').innerHTML = 00 + ":" + 31;
       startTimer();
       break;
     case "answerCheck":
