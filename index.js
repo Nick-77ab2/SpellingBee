@@ -276,8 +276,8 @@ wsServer.on('connection', function (ws){
 			
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
+			broadcast(`Player ${currentPlayers[ws]} joined`);
 		}
-		broadcast(`Player ${currentPlayers[ws]} joined`);
 		ws.send(JSON.stringify(data)); 
 	});
 });
