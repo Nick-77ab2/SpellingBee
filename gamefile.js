@@ -8,6 +8,8 @@ plan: since it's multiplayer, the entire game would be hosted serverside, so:
 	a timer for each question,
 	broadcast when somebody disconnects,
 	keeping track of scores
+	
+	handling the gamedata sent by first client
 */
 
 const axios = require("axios");
@@ -21,9 +23,12 @@ const api_key = env.API_KEY;
 const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.7ykyi.mongodb.net/spelling_bee?retryWrites=true&w=majority`;
 
 
-let wordPool, word, exampleSentence, definition = "";
+let wordPool, word, exampleSentence, definition;
 let difficulty, amount;
-let diffMult = {easy: 1.0, medium: 1.25, hard: 1.5}
+let currentPlayers = {};
+let userid = 0; //TODO: integrate with user logging feature
+let maxPlayers = 0;
+let availableDiff = ["easy", "medium", "hard"];
 
 //test word pool
 wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
@@ -32,8 +37,6 @@ const wsServer = new websocket.Server({
 	port: 3000
 });
 
-let currentPlayers = {};
-let userid = 0; //TODO: integrate with user logging feature
 wsServer.on('connection', function (ws){
 	console.log(Object.keys(currentPlayers).length);
 	if (Object.keys(currentPlayers).length == 3){
@@ -42,30 +45,89 @@ wsServer.on('connection', function (ws){
 		return;
 	}
 	
-	
 	userid++; //TODO: integrate with user logging feature
 	currentPlayers[userid] = ws;
+	if (Object.keys(currentPlayers).length == 3){
+		startGameSession();
+	}
 	//broadcast whenever new player join
 	broadcast(`Player ${userid} joined`);
 	
 	ws.on('message', function (message){
 		console.log('received: %s from %s', message);
 		let command = JSON.parse(message);
-		data = execute(command);
+		var data = {};
+		if (command.type == "help"){
+			switch (command.data) {
+				case "definition":
+					data.type = "definition";
+					if (definition == ""){
+						data.available = false;
+					} else {
+						data.available = true;
+					}
+					data.data = definition;
+					break;
+				case "exampleSen":
+					data.type = "exampleSen";
+					if (definition == ""){
+						data.available = false;
+					} else {
+						data.available = true;
+					}
+					data.data = exampleSentence;
+					break;
+				default:
+					data.type = "wut";
+					data.data = "";
+					break;
+			}
+		}
+		
+		if (command.type == "answer"){
+			data.type = "answerCheck";
+			if (command.data == word){
+				data.data =  true;
+				setNextWord();
+			}
+			data.data = false;
+		}
+		
+		if (command.type == "level"){
+			data.type = "gameData";
+			difficulty = command.level;
+			maxPlayers = command.playerCount;
+			name = command.playerName; //TODO: do something with this data
+			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
+			//broadcast for all players to know
+			broadcast(word, true, ws.origin);
+		}
 		
 		ws.send(JSON.stringify(data)); 
 	});
 });
 
-function broadcast(message, isNewWord = false){
+function startGameSession(){
+}
+	
+
+function broadcast(message, isNewWord = false, userid = ""){
 	let type = "broadcast";
 	if (isNewWord){
 		type = "newWord";
 	}
+	let data = {
+		type : type,
+		data : message
+	};
+	if (isNewWord){
+		data.userid = userid;
+	}
+	
 	wsServer.clients.forEach(function each(client){
 		if (client.readyState === websocket.OPEN) {
-			client.send(JSON.stringify({type: type, data: message}));
-		};
+			client.send(JSON.stringify(data));
+		}
 	});
 }
 
@@ -100,7 +162,7 @@ function getWordPool(difficulty, amount){
 	return result; // should return an array of words
 }
 
-function setNextWord(){
+function setNextWord(userid){
 	word = wordPool.shift();
 	
 	//get data features
@@ -155,9 +217,6 @@ function setNextWord(){
 		}
 		
 	});
-	
-	//broadcast for all players to know
-	broadcast(word, true);
 }
 
 function execute(command){
@@ -190,12 +249,20 @@ function execute(command){
 	}
 	
 	if (command.type == "answer"){
-		data.type = "answerCheck"
+		data.type = "answerCheck";
 		if (command.data == word){
 			data.data =  true;
 			setNextWord();
 		}
 		data.data = false;
+	}
+	
+	if (command.type == "level"){
+		data.type = "gameData";
+		difficulty = command.level;
+		maxPlayers = command.playerCount;
+		name = command.playerName; //TODO: do something with this data
+		data.data = {level: difficulty, playerCount: maxPlayers, playerName: name} 
 	}
 	return data;
 }
