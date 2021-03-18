@@ -117,8 +117,8 @@ function broadcast(message, isNewWord = false, userid = ""){
 		type = "newWord";
 	}
 	let data = {
-		type = type;
-		data = message;
+		type : type,
+		data : message
 	};
 	if (isNewWord){
 		data.userid = userid;
