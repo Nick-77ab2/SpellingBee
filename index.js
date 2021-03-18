@@ -190,7 +190,7 @@ let wordPool, word, exampleSentence, definition;
 let difficulty, amount;
 let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
-let maxPlayers = 0;
+let maxPlayers = 1;
 let availableDiff = ["easy", "medium", "hard"];
 const time = 31000;
 let timer;
@@ -272,10 +272,11 @@ wsServer.on('connection', function (ws){
 			if (maxPlayers == 1) {// starting value, must be played with at least 2
 				difficulty = command.level; // then set it
 				maxPlayers = command.playerCount;
+				console.log(maxPlayers);
 			}
 			
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
-			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
+			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
 		}
 		ws.send(JSON.stringify(data)); 
