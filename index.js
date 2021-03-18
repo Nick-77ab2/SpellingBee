@@ -214,14 +214,11 @@ wsServer.on('connection', function (ws){
 		ws.terminate();
 		return;
 	}
-	
-	userid++; //TODO: integrate with user logging feature
-	currentPlayers[userid] = ws;
+
 	if (Object.keys(currentPlayers).length == 3){
 		startGameSession();
 	}
 	//broadcast whenever new player join
-	broadcast(`Player ${userid} joined`);
 	
 	ws.on('message', function (message){
 		console.log('received: %s from %s', message);
@@ -259,24 +256,23 @@ wsServer.on('connection', function (ws){
 			if (command.data == word){
 				data.data =  true;
 				setNextWord();
+				broadcast(word, true, 
 			}
 			data.data = false;
 		}
 		
 		if (command.type == "level"){
+			//only called once when the connection is made, so can act as a handler for broadcasting new players
 			data.type = "gameData";
-			if (difficulty == ""){ // starting value, reseted
+			if (maxPlayers == 1) {// starting value, must be played with at least 2
 				difficulty = command.level; // then set it
-			}
-			
-			if (maxPlayers == 1) {//starting value, must be played with at least 2
 				maxPlayers = command.playerCount;
 			}
 			
-			currentPlayers[command.playerName] = ws; //TODO: do something with this data
+			currentPlayers[ws] = command.playerName; //TODO: do something with this data
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
 		}
-		
+		broadcast(`Player ${currentPlayers[ws].playerName} joined`);
 		ws.send(JSON.stringify(data)); 
 	});
 });
@@ -286,6 +282,12 @@ async function startGameSession(){
 	await getWordPool(difficulty = "easy");
 	console.log(wordPool);
 	broadcast(word, true, null);
+}
+
+function closeGameSession(){
+	wordPool = [];
+	maxPlayers = 1;//impossible to play with 1 => best value to reset
+	difficulty = "" //mongoDB would return nothing
 }
 
 function broadcast(message, isNewWord = false, userid = ""){
@@ -394,54 +396,4 @@ function setNextWord(userid){
 		}
 		
 	});
-}
-
-function execute(command){
-	var data = {};
-	if (command.type == "help"){
-		switch (command.data) {
-			case "definition":
-				data.type = "definition";
-				if (definition == ""){
-					data.available = false;
-				} else {
-					data.available = true;
-				}
-				data.data = definition;
-				break;
-			case "exampleSen":
-				data.type = "exampleSen";
-				if (definition == ""){
-					data.available = false;
-				} else {
-					data.available = true;
-				}
-				data.data = exampleSentence;
-				break;
-			default:
-				data.type = "wut";
-				data.data = "";
-				break;
-		}
-	}
-	
-	if (command.type == "answer"){
-		data.type = "answerCheck";
-		if (command.data == word){
-			data.data =  true;
-			setNextWord();
-		}
-		data.data = false;
-	}
-	
-	if (command.type == "level"){
-		data.type = "gameData";
-		if (maxPlayers == 1){ // maxPlayers reset value
-			difficulty = command.level;
-			maxPlayers = command.playerCount;
-		}
-		name = command.playerName; //TODO: do something with this data
-		data.data = {level: difficulty, playerCount: maxPlayers, playerName: name} 
-	}
-	return data;
 }
