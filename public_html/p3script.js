@@ -46,7 +46,7 @@ function convertLevel(level){
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
   let theLevel=convertLevel(level);
-  sendGameData(theLevel,name,playerCount);
+  sendGameData(name,theLevel,playerCount);
 };
 
 
@@ -240,20 +240,6 @@ function sendAnswer(answer) {
     data: answer
   }
 
-  connection.send(JSON.stringify(command));
-}
-function sendLevel(level) {
-  var command = {
-    type: "level",
-    data: level
-  }
-  connection.send(JSON.stringify(command));
-}
-function sendPlayerCount(count){
-  var command = {
-    type: "playerCount",
-    data: count
-  }
   connection.send(JSON.stringify(command));
 }
 
