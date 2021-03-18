@@ -209,8 +209,8 @@ server.listen(8080, function () {
 
 wsServer.on('connection', function (ws){
 	console.log(Object.keys(currentPlayers).length);
-	if (Object.keys(currentPlayers).length == 3){
-		ws.send(JSON.stringify({type: "broadcast", data: "maximum amount of players (3 players) reached, no more connection will be allowed"}));
+	if (Object.keys(currentPlayers).length > maxPlayers){
+		ws.send(JSON.stringify({type: "broadcast", data: `maximum amount of players (${maxPlayers} players) reached, no more connection will be allowed`}));
 		ws.terminate();
 		return;
 	}
