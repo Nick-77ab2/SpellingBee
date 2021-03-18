@@ -126,6 +126,15 @@ body {
 	padding: 8px 0px;
 }
 
+.img_button_close {
+	position: absolute;
+	right: -11%;
+	top: -8%;
+	width: 7vw;
+	height: 5vh;
+	cursor: pointer;
+}
+
 /*.levels > *{
   display: inline-block;
     width: 30%;
