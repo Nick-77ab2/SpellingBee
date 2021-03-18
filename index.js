@@ -192,9 +192,10 @@ let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
 let maxPlayers = 0;
 let availableDiff = ["easy", "medium", "hard"];
+const time = 31;
 
 //test word pool
-wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
+wordPool = [];
 
 const { createServer } = require('http');
 const server = createServer(app);
@@ -264,21 +265,28 @@ wsServer.on('connection', function (ws){
 		
 		if (command.type == "level"){
 			data.type = "gameData";
-			difficulty = command.level;
-			maxPlayers = command.playerCount;
-			name = command.playerName; //TODO: do something with this data
+			if (difficulty == ""){ // starting value, reseted
+				difficulty = command.level; // then set it
+			}
+			
+			if (maxPlayers == 1) {//starting value, must be played with at least 2
+				maxPlayers = command.playerCount;
+			}
+			
+			currentPlayers[command.playerName] = ws; //TODO: do something with this data
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
-			//broadcast for all players to know
-			broadcast(word, true, ws.origin);
 		}
 		
 		ws.send(JSON.stringify(data)); 
 	});
 });
 
-function startGameSession(){
+async function startGameSession(){
+	//broadcast for all players to know
+	await getWordPool(difficulty = "easy");
+	console.log(wordPool);
+	broadcast(word, true, null);
 }
-	
 
 function broadcast(message, isNewWord = false, userid = ""){
 	let type = "broadcast";
@@ -300,35 +308,35 @@ function broadcast(message, isNewWord = false, userid = ""){
 	});
 }
 
-function getWordPool(difficulty, amount){
+function getWordPool(difficulty){
 	// query from mongoDB
 	// randomize the array also
 	
-	let result = [];
-	
 	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
-	let level = "easy";
+	let level = difficulty;
 	
-	client.connect(function (error){
-		const wordsCollection = client.db('spelling_bee').collection('words');
-		// randomly grab from database
-		wordsCollection.aggregate([
-                { $match: { "difficulty": difficulty } },
-                { $sample: { size: 10 } },
-                { $project: { "word": 1, "_id": 0 } },
-            ]).toArray()
-                .then(function (data) {
-                    data.forEach(function (value, index) {
-						result.push({ word: value.word });
-                    });
-                    console.log(result);
-                })
-                .catch(function (error) {
-                    console.log("error");
-                });
+	//Promise-based to deal with async nature of mongodb query
+	return new Promise(function(resolve) {
+		client.connect(function (error){
+			const wordsCollection = client.db('spelling_bee').collection('words');
+			// randomly grab from database
+			wordsCollection.aggregate([
+					{ $match: { "difficulty": difficulty } },
+					{ $sample: { size: 10 } },
+					{ $project: { "word": 1, "_id": 0 } },
+				]).toArray()
+					.then(function (data) {
+						data.forEach(function (value, index) {
+							wordPool.push(value.word);
+						});
+						//console.log(wordPool);
+						resolve("resolved");
+					})
+					.catch(function (error) {
+						console.log("error");
+					});
+		});
 	});
-	
-	return result; // should return an array of words
 }
 
 function setNextWord(userid){
@@ -428,17 +436,12 @@ function execute(command){
 	
 	if (command.type == "level"){
 		data.type = "gameData";
-		difficulty = command.level;
-		maxPlayers = command.playerCount;
+		if (maxPlayers == 1){ // maxPlayers reset value
+			difficulty = command.level;
+			maxPlayers = command.playerCount;
+		}
 		name = command.playerName; //TODO: do something with this data
 		data.data = {level: difficulty, playerCount: maxPlayers, playerName: name} 
 	}
 	return data;
-}
-
-function incCount(){
-	count++;
-	if (count > 3) {
-		count = 0;
-	}
 }
