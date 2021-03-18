@@ -282,6 +282,7 @@ wsServer.on('connection', function (ws){
 async function startGameSession(){
 	//broadcast for all players to know
 	await getWordPool(difficulty = "easy");
+	setNextWord();
 	console.log(wordPool);
 	broadcast(word, true, null);
 }
