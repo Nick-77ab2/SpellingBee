@@ -23,6 +23,7 @@ let gainedPoints = document.getElementById("gainedPoints");
 window.onload = function() {
   level = localStorage.getItem("levelNumber");
   playerCount = localStorage.getItem("playerCount");
+  console.log(playerCount);
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
 };
@@ -43,10 +44,14 @@ function convertLevel(level){
     return "hard";
   }
 }
+function convertplayerCount(playerCount){
+  return parseInt(playerCount);
+}
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
   let theLevel=convertLevel(level);
-  sendGameData(name,theLevel,playerCount);
+  let theCount=convertplayerCount(playerCount);
+  sendGameData(name,theLevel,theCount);
 };
 
 
