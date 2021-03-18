@@ -192,7 +192,8 @@ let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
 let maxPlayers = 0;
 let availableDiff = ["easy", "medium", "hard"];
-const time = 31;
+const time = 31000;
+let timer;
 
 //test word pool
 wordPool = [];
@@ -254,9 +255,11 @@ wsServer.on('connection', function (ws){
 		if (command.type == "answer"){
 			data.type = "answerCheck";
 			if (command.data == word){
+				stopTimer();
 				data.data =  true;
 				setNextWord();
 				broadcast(word, true, currentPlayers[ws]);
+				startTimer();
 			}
 			else {
 				data.data = false;
@@ -282,9 +285,21 @@ wsServer.on('connection', function (ws){
 async function startGameSession(){
 	//broadcast for all players to know
 	await getWordPool(difficulty);
-	setNextWord();
 	console.log(wordPool);
+	setNextWord();
 	broadcast(word, true, null);
+	startTimer();
+}
+
+function startTimer(){
+	timer = setTimeout(function(){
+		setNextWord();
+		broadcast(word, true, null);
+	}, time);
+}
+
+function stopTimer(){
+	clearTimeout(timer);
 }
 
 function closeGameSession(){
