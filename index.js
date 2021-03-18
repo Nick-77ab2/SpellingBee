@@ -256,7 +256,7 @@ wsServer.on('connection', function (ws){
 			if (command.data == word){
 				data.data =  true;
 				setNextWord();
-				broadcast(word, true, 
+				broadcast(word, true, currentPlayers[ws]);
 			}
 			data.data = false;
 		}
@@ -272,7 +272,7 @@ wsServer.on('connection', function (ws){
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
 		}
-		broadcast(`Player ${currentPlayers[ws].playerName} joined`);
+		broadcast(`Player ${currentPlayers[ws]} joined`);
 		ws.send(JSON.stringify(data)); 
 	});
 });
