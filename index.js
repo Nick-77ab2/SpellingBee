@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const env = require('./env.json');
-const websocket = require('./gamefile.js');
+const websocket = require("ws"); 
 let app = express();
 
 const MongoClient = require('mongodb').MongoClient;
@@ -172,7 +172,7 @@ app.post('/login', function(req, res){
             }
 		}).catch(error => {
 			console.error(error);
-			client.close();
+			client.close(); 
 			return res.status(500).send();
 		});
 	});
@@ -182,6 +182,263 @@ app.post('/login', function(req, res){
 // PUT and DELETE (User update and delete) FUNCTIONS COMING
 // WEBSITE: https://zellwk.com/blog/crud-express-mongodb/
 
-app.listen(port,() => {
-	console.log(`Listening at: http://${hostname}:${port}`);
+//<====================WEBSOCKET======================>
+
+const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.7ykyi.mongodb.net/spelling_bee?retryWrites=true&w=majority`;
+
+let wordPool, word, exampleSentence, definition;
+let difficulty, amount;
+let currentPlayers = {};
+let userid = 0; //TODO: integrate with user logging feature
+let maxPlayers = 0;
+let availableDiff = ["easy", "medium", "hard"];
+
+//test word pool
+wordPool = ["language", "why", "pneumonoultramicroscopicsilicovolcanoconiosis"];
+
+const { createServer } = require('http');
+const server = createServer(app);
+const wsServer = new websocket.Server({
+	server
 });
+
+server.listen(8080, function () {
+  console.log('Listening on http://localhost:8080/');
+});
+
+wsServer.on('connection', function (ws){
+	console.log(Object.keys(currentPlayers).length);
+	if (Object.keys(currentPlayers).length == 3){
+		ws.send(JSON.stringify({type: "broadcast", data: "maximum amount of players (3 players) reached, no more connection will be allowed"}));
+		ws.terminate();
+		return;
+	}
+	
+	userid++; //TODO: integrate with user logging feature
+	currentPlayers[userid] = ws;
+	if (Object.keys(currentPlayers).length == 3){
+		startGameSession();
+	}
+	//broadcast whenever new player join
+	broadcast(`Player ${userid} joined`);
+	
+	ws.on('message', function (message){
+		console.log('received: %s from %s', message);
+		let command = JSON.parse(message);
+		var data = {};
+		if (command.type == "help"){
+			switch (command.data) {
+				case "definition":
+					data.type = "definition";
+					if (definition == ""){
+						data.available = false;
+					} else {
+						data.available = true;
+					}
+					data.data = definition;
+					break;
+				case "exampleSen":
+					data.type = "exampleSen";
+					if (definition == ""){
+						data.available = false;
+					} else {
+						data.available = true;
+					}
+					data.data = exampleSentence;
+					break;
+				default:
+					data.type = "wut";
+					data.data = "";
+					break;
+			}
+		}
+		
+		if (command.type == "answer"){
+			data.type = "answerCheck";
+			if (command.data == word){
+				data.data =  true;
+				setNextWord();
+			}
+			data.data = false;
+		}
+		
+		if (command.type == "level"){
+			data.type = "gameData";
+			difficulty = command.level;
+			maxPlayers = command.playerCount;
+			name = command.playerName; //TODO: do something with this data
+			data.data = {level: difficulty, playerCount: maxPlayers, playerName: name}
+			//broadcast for all players to know
+			broadcast(word, true, ws.origin);
+		}
+		
+		ws.send(JSON.stringify(data)); 
+	});
+});
+
+function startGameSession(){
+}
+	
+
+function broadcast(message, isNewWord = false, userid = ""){
+	let type = "broadcast";
+	if (isNewWord){
+		type = "newWord";
+	}
+	let data = {
+		type : type,
+		data : message
+	};
+	if (isNewWord){
+		data.userid = userid;
+	}
+	
+	wsServer.clients.forEach(function each(client){
+		if (client.readyState === websocket.OPEN) {
+			client.send(JSON.stringify(data));
+		}
+	});
+}
+
+function getWordPool(difficulty, amount){
+	// query from mongoDB
+	// randomize the array also
+	
+	let result = [];
+	
+	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
+	let level = "easy";
+	
+	client.connect(function (error){
+		const wordsCollection = client.db('spelling_bee').collection('words');
+		// randomly grab from database
+		wordsCollection.aggregate([
+                { $match: { "difficulty": difficulty } },
+                { $sample: { size: 10 } },
+                { $project: { "word": 1, "_id": 0 } },
+            ]).toArray()
+                .then(function (data) {
+                    data.forEach(function (value, index) {
+						result.push({ word: value.word });
+                    });
+                    console.log(result);
+                })
+                .catch(function (error) {
+                    console.log("error");
+                });
+	});
+	
+	return result; // should return an array of words
+}
+
+function setNextWord(userid){
+	word = wordPool.shift();
+	
+	//get data features
+	var options = {
+	  method: 'GET',
+	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+	  headers: {
+		'x-rapidapi-key': '3f616d31e1mshb18981600a15616p1c8930jsn55578da4e7b8',
+		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
+	  }
+	};
+
+	axios.request(options).then(function (response) {
+		let error = {definition: false, example: false};
+		let isError = false;
+		if (response.data.results == null){
+			isError = true;
+			error.defintion =  true;
+			error.example = true;
+		}
+		
+		if (response.data.results[0].defintion == null) {
+			isError = true;
+			error.defintion =  true;
+		}
+		
+		if (response.data.results[0].examples == null){
+			isError = true;
+			error.example =  true;
+		}
+		
+		if (!error.defintion){
+			definition = response.data.results[0].definition;
+		}
+		
+		if (!error.example){
+			exampleSentence = response.data.results[0].examples[0];
+		}
+		
+		if (isError){
+			throw error;
+		}
+	}).catch(function (error) {
+		if (error.definition){
+			definition = "not available";
+			console.log(`no definition for word '${word}' available`);
+		}
+		
+		if (error.example){
+			exampleSentence = "not available";
+			console.log(`no example sentence for word '${word}' available`);
+		}
+		
+	});
+}
+
+function execute(command){
+	var data = {};
+	if (command.type == "help"){
+		switch (command.data) {
+			case "definition":
+				data.type = "definition";
+				if (definition == ""){
+					data.available = false;
+				} else {
+					data.available = true;
+				}
+				data.data = definition;
+				break;
+			case "exampleSen":
+				data.type = "exampleSen";
+				if (definition == ""){
+					data.available = false;
+				} else {
+					data.available = true;
+				}
+				data.data = exampleSentence;
+				break;
+			default:
+				data.type = "wut";
+				data.data = "";
+				break;
+		}
+	}
+	
+	if (command.type == "answer"){
+		data.type = "answerCheck";
+		if (command.data == word){
+			data.data =  true;
+			setNextWord();
+		}
+		data.data = false;
+	}
+	
+	if (command.type == "level"){
+		data.type = "gameData";
+		difficulty = command.level;
+		maxPlayers = command.playerCount;
+		name = command.playerName; //TODO: do something with this data
+		data.data = {level: difficulty, playerCount: maxPlayers, playerName: name} 
+	}
+	return data;
+}
+
+function incCount(){
+	count++;
+	if (count > 3) {
+		count = 0;
+	}
+}

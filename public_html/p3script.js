@@ -23,20 +23,20 @@ let gainedPoints = document.getElementById("gainedPoints");
 window.onload = function() {
   level = localStorage.getItem("levelNumber");
   //playerCount = localStorage.getItem("playerCount");
-  name = localstorage.getItem("username");
-  console.log(name);
+  name = localStorage.getItem("username");
   currentLevel.textContent = level;
 };
 
-url = 'ws://localhost:3000' //url of server here
+url = `wss://${location.host}` //url of server here
+console.log(url);
 var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION AND SEND THE LEVEL IMMEDIATELY=============>
 function convertLevel(level){
-  if(level==1){
+  if(level===1){
     return "easy";
   }
-  else if (level==2){
+  else if (level===2){
     return "medium";
   }
   else{
