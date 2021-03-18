@@ -258,7 +258,9 @@ wsServer.on('connection', function (ws){
 				setNextWord();
 				broadcast(word, true, currentPlayers[ws]);
 			}
-			data.data = false;
+			else {
+				data.data = false;
+			}
 		}
 		
 		if (command.type == "level"){
