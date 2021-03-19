@@ -199,7 +199,7 @@ let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
 let maxPlayers = 1;
 let availableDiff = ["easy", "medium", "hard"];
-const time = 31000;
+const time = 5000;
 let timer;
 
 wordPool = [];
@@ -314,9 +314,7 @@ async function startGameSession(){
 }
 
 function startTimer(){
-	timer = setTimeout(function(){
-		setNextWord();
-		broadcast(word, true, null);
+	timer = setTimeout(async function(){
 	}, time);
 }
 
@@ -427,12 +425,13 @@ function setNextWord(){
 			if (isError){
 				throw error;
 			}
+			console.log(definition);
+			console.log(exampleSentence);
 			resolve("resolved");
 		}).catch(function (error) {
 			console.log(error);
-			
+			resolve("resolved");
 		});
-		console.log(definition);
-		console.log(exampleSentence);
+
 	});
 }
