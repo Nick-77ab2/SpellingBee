@@ -214,6 +214,10 @@ server.listen(8080, function () {
   console.log('Listening on http://localhost:8080/');
 });
 
+let easyWP = getWordPool("easy");
+let mediumWP = getWordPool("medium");
+let hardWP = getWordPool("hard");
+
 wsServer.on('connection', async function (ws){
 	if (Object.keys(currentPlayers).length > maxPlayers){
 		ws.send(JSON.stringify({type: "broadcast", data: `maximum amount of players (${maxPlayers} players) reached, no more connection will be allowed`}));
@@ -221,12 +225,11 @@ wsServer.on('connection', async function (ws){
 		return;
 	}
 
-	console.log(Object.keys(currentPlayers).length);
 	currentPlayers[ws] = ""; //placeholder
+	console.log(Object.keys(currentPlayers).length);
 	if (Object.keys(currentPlayers).length == maxPlayers){
 		await startGameSession();
 	}
-	//broadcast whenever new player join
 	
 	ws.on('message', function (message){
 		console.log('received: %s from %s', message);
@@ -303,8 +306,9 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
-	await getWordPool(difficulty);
+	wordPool = easyWP;
 	console.log(wordPool);
+	console.log(testWP);
 	await setNextWord();
 	await broadcast(word, true, null);
 	startTimer();
@@ -357,11 +361,10 @@ function getWordPool(difficulty){
 	// query from mongoDB
 	// randomize the array also
 	
-	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
-	let level = difficulty;
-	
 	//Promise-based to deal with async nature of mongodb query
 	return new Promise(function(resolve) {
+		let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
+		let level = difficulty;
 		client.connect(function (error){
 			const wordsCollection = client.db('spelling_bee').collection('words');
 			// randomly grab from database
@@ -375,7 +378,7 @@ function getWordPool(difficulty){
 							wordPool.push(value.word);
 						});
 						//console.log(wordPool);
-						resolve("resolved");
+						resolve(wordPool);
 					})
 					.catch(function (error) {
 						console.log("error");
