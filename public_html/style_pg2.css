@@ -2,9 +2,9 @@ body {
 	background-color: #ffe87c;
 }
 .pg2_center {
-	display: grid;
+	/*display: grid;
 	grid-template-columns: 50% 50%;
-	grid-template-rows: 20% 70%;
+	grid-template-rows: 20% 70%;*/
 	margin: auto;
 	width: 100%;
 	height: 99vh;
@@ -34,6 +34,7 @@ body {
 	background-repeat: no-repeat;
 	margin-left: auto;
 	margin-right: auto;
+  z-index: 1;
 }
 
 #level1 {
@@ -77,75 +78,91 @@ body {
 	color: #492103;
 }
 
-.page_two_pop_up {
-	position: relative;
-	text-align: center;
-}
 
 .popup {
-  position: absolute;
+  position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
 	right: 0;
-	width: 70%;
-	height: 40%;
+	width: 50%;
+	height: 250px;
 	margin: auto;
-	background: white;
+	background-color: rgba(255, 255, 255, 0.767);
 	border-radius: 15px;
   visibility: collapse;
+  text-align: center;
 }
 
 .text_enter {
-	padding-top: 3%;
-	font-size: 24px;
+	padding-top: 50px;
+	font-size: 21px;
 	font-weight: bold;
+  background-image: url("./themes/images/custom/page3-13.png");
+	background-size: 430px;
+	width: 430px;
+	height: 70px;
+	border: 1px solid #ff000000;
+	background-repeat: no-repeat;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .input_number {
 	border-radius: 20px;
+  border-color: rgba(255, 255, 255, 0.897);
 	width: 180px;
-	height: 4vh;
-	padding: 3px 0px 5px 15px;
-	font-size: 2.5em;
+	font-size: 25px;
 	text-align: center;
 	font-weight: bold;
-	color: red;
-	box-shadow: 5px 5px 3px black;
+	color: rgb(53, 42, 13);
+	box-shadow: 5px 5px 3px rgba(36, 29, 8, 0.897);
 	margin-bottom: 3%;
 }
 
+
+
+
+
 .btn_go {
-	margin-top: 2%;
-	font-size: 16pt;
-	border-radius: 20px;
-	border: 1.5px solid black;
-	width: 40%;
-	height: 40px;
-	padding: 8px 0px;
+	box-shadow: 0px 1px 0px 0px #fff6af;
+	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+	background-color:#ffec64;
+	border-radius:6px;
+	border:1px solid #ffaa22;
+	display:inline-block;
+	cursor:pointer;
+	color:#333333;
+	font-family:Arial;
+	font-size:25px;
+	font-weight:bold;
+	padding:8px 30px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffee66;
 }
+.btn_go:hover {
+	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+	background-color:#ffab23;
+}
+.btn_go:active {
+	position:relative;
+	top:1px;
+}
+
 
 .img_button_close {
 	position: absolute;
-	right: -11%;
-	top: -8%;
-	width: 7vw;
-	height: 5vh;
+	right: -3%;
+	top: -5%;
+	width: 4vw;
 	cursor: pointer;
 }
 
-/*.levels > *{
-  display: inline-block;
-    width: 30%;
-    height: 30%;
-  vertical-align: middle; 
-}
-.level1{
-  padding-left:5%;
-}*/
+
 
 .footer {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
+  z-index: 0;
 }

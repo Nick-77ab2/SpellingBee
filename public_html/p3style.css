@@ -45,8 +45,7 @@ header {
 	display: inline-grid;
 	margin-top: 4%;
 	width: 90%;
-	height: 80%;
-	background: white;
+	background: rgba(255, 255, 255, 0.651);
 	border-radius: 20px;
 }
 
@@ -65,11 +64,8 @@ header {
 	display: inline-grid;
 	justify-content: center;
 	align-content: center;
-	margin-top: 2%;
-	width: 90%;
+	width: 100%;
 	height: 80%;
-	border-radius: 20px;
-	background: white;
 }
 
 .message {
@@ -96,9 +92,8 @@ header {
 	margin-right: 3vw;
 	font-size: 1rem;
 	padding: 1vh 1.5vw;
-	font-weight: bold;
 	border-radius: 15px;
-	border: 2px solid black;
+	border: 1px solid #00000000;
 	box-shadow: 5px 10px 20px rgba(240, 179, 13, 0.4);
 }
 
@@ -108,11 +103,13 @@ header {
 
 .what_level {
 	position: absolute;
-	top: 50%;
+	top: 47%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
-	font-size: 2em;
+	font-size: 35px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px #443b1083;
 }
 
 .thumbnail {
@@ -122,18 +119,18 @@ header {
 
 .text_enter {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	top: 40%;
+	left: 45%;
 	transform: translate(-50%, -50%);
 	text-align: center;
-	text-transform: uppercase;
-	font-size: 1.2em;
-	font-weight: bold;
+	font-size: 30px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px #443b1083;
 }
 
 .show_meaning {
 	position: absolute;
-	top: 24%;
+	top: 25px;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
@@ -144,8 +141,7 @@ header {
 
 /* IMAGE*/
 .img_size {
-	width: 5vw;
-	height: 6vh;
+	width: 4vw;
 }
 
 .main_game {
@@ -217,8 +213,7 @@ header {
 }
 
 .img_button {
-	width: 7vw;
-	height: 8vh;
+	width: 4vw;
 }
 
 .btn_transparent {
@@ -232,11 +227,12 @@ header {
 	display: block;
 	width: 100%;
 	height: 100%;
+  z-index: 0;
 }
 
 .grid-popup {
 	display: grid;
-	grid-template-rows: 50% 20%;
+	grid-template-rows: 30% 20%;
 	grid-template-columns: 100%;
 	height: 100vh;
 }
@@ -259,32 +255,41 @@ header {
 /* POPUP */
 .img_button_close {
 	position: absolute;
-	right: 68%;
+	right: 70%;
 	top: 16%;
-	width: 7vw;
-	height: 5vh;
+	width: 40px;
+	cursor: pointer;
+}
+.img_button_close1 {
+	position: absolute;
+	right: 70%;
+	top: 48%;
+	width: 40px;
 	cursor: pointer;
 }
 
 .img_level {
 	display: block;
 	margin: 0 auto;
-	width: 18vw;
-	height: 12vh;
+	height: 55px;
 }
 
+.img_level1 {
+	display: block;
+	margin: 0px auto;
+	height: 80px;
+}
 .text_meaning {
 	font-size: 1.5em;
+  padding-bottom: 5px;
 }
 
 .user_answer {
 	border-radius: 20px;
-	width: 180px;
-	height: 4vh;
-	padding: 5px 0px 5px 15px;
+	width: 100%;
 	font-size: 2.5em;
 	text-align: center;
 	font-weight: bold;
-	color: blue;
+	color: rgb(19, 12, 4);
 	box-shadow: 5px 5px 3px black;
 }

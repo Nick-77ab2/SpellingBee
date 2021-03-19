@@ -15,10 +15,7 @@
   + Second button is Meaning. When user clicks on Meaning button, there is a meaning popup will display the definition of the word,
   + Third on the NOT the Button, they just simply a roll paper will display the level you are currently playing
   + Fouth button is the timer of. You will have a specific time to answer your question. Normally is 5:00 (5 minutes) for one level
-  + Fifth button is the Score button. Each question that you answered correct, you will get the Score base on level. Base on our data object: {easy: 1.0, medium: 1.25, hard: 1.5}
-    * Easy, level 1: you got 100 points
-    * Medium, level 2: you got 125 points
-    * Hard, level 3: you got 150 points
+  + Fifth button is the Score button. For each question that you answered correct, you will get 10 points. The levels are separated by difficult of words.
 - In the middle, from left to right, there are 3 columns
   + First column will display the popup section when user clicks on mearning button (second button)
   + Second column is the game content
@@ -29,4 +26,4 @@
     * First column, the PLAY button, when user clicks on that button, user will hear the pronunciation of that word.
     * Second column, the CANCEL button, when user clicks on that button, user will exit the session (therefore ending the multiplayer)
     * Third column, the REPLAY button, the replay button will work at the end of the session to replay the level.
-    * Fourth column, the NEXT LEVEL button, the next button will move you back to page 2, the Level map.
+    * Fourth column, the NEXT LEVEL button, the next button will move you back to page 2, the Level map. (at end of game session)
