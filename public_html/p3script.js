@@ -33,25 +33,10 @@ console.log(url);
 var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION AND SEND THE LEVEL IMMEDIATELY=============>
-function convertLevel(level){
-  if(level==="1"){
-    return "easy";
-  }
-  else if (level==="2"){
-    return "medium";
-  }
-  else{
-    return "hard";
-  }
-}
-function convertplayerCount(playerCount){
-  return parseInt(playerCount);
-}
+
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
-  let theLevel=convertLevel(level);
-  let theCount=convertplayerCount(playerCount);
-  sendGameData(name,theLevel,theCount);
+  sendGameData(name,level,playerCount);
 };
 
 

@@ -22,7 +22,6 @@ body {
 }
 
 .level {
-	grid-column: 1 / 2;
 	width: 100%;
 }
 
@@ -80,7 +79,6 @@ body {
 
 .page_two_pop_up {
 	position: relative;
-	grid-column: 2 / 3;
 	text-align: center;
 }
 
@@ -93,7 +91,7 @@ body {
 	width: 70%;
 	height: 40%;
 	margin: auto;
-	background: lightgray;
+	background: white;
 	border-radius: 15px;
   visibility: collapse;
 }
