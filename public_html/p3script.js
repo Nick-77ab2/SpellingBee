@@ -17,7 +17,7 @@ var wordsFinished=-1;
 let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
 let playerJoinText = document.getElementById("playerJoin");
-let playerJoin = document.getElementById("text_popup")
+let playerJoin = document.getElementById("text_popup");
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
 
