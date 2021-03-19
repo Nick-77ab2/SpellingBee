@@ -18,12 +18,23 @@ let gainedPoints = document.getElementById("gainedPoints");
 let playerJoinText = document.getElementById("playerJoin");
 let playerJoin = document.getElementById("text_popup")
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
-url = `wss://${location.host}` //url of server here
-console.log(url);
-var connection = new WebSocket(url);
+level = localStorage.getItem("levelNumber");
+var wordPool=[];
+fetch(`/getwords?level=${level}`).then(function(response){
+  return response.json();
+}).then(function(data){
+  wordPool=data.slice(0);
+  console.log(wordPool);
+  url = `wss://${location.host}` //url of server here
+  console.log(url);
+  var connection;
+  connection = new WebSocket(url);
+}).catch(function(error){
+  console.log("error:", error);
+});
+
 
 //<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
-
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
   level = localStorage.getItem("levelNumber");
@@ -129,7 +140,6 @@ let hideMeaning = document.getElementById("hideMeaning");
 hideMeaning.addEventListener("click", function() {
   popUp.style.visibility = "hidden";
 });
-
 
 
 //<=============found on codepen and re-written to work to our needs================>

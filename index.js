@@ -184,8 +184,34 @@ app.post('/login', function(req, res){
 		});
 	});
 });
-
-
+//<==================GET WORDPOOL==================>
+app.get('/getwords', function(req, res){
+  console.log("I HAVE CONNECTED");
+  let level=req.query['level'];
+  console.log(level);
+  var wordPool=[];
+	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
+	client.connect(function (error){
+		const wordsCollection = client.db('spelling_bee').collection('words');
+		// randomly grab from database
+		wordsCollection.aggregate([
+				{ $match: { "difficulty": level } },
+				{ $sample: { size: 10 } },
+				{ $project: { "word": 1, "_id": 0 } },
+			]).toArray()
+				.then(function (data) {
+					data.forEach(function (value, index) {
+						wordPool.push(value.word);
+					});
+				  console.log(wordPool);
+				})
+				.catch(function (error) {
+					console.log("error:", error);
+				});
+	});
+//console.log(wordPool);
+return res.status(200).json(wordPool);
+});
 // PUT and DELETE (User update and delete) FUNCTIONS COMING
 // WEBSITE: https://zellwk.com/blog/crud-express-mongodb/
 
@@ -307,8 +333,8 @@ wsServer.on('connection', async function (ws){
 async function startGameSession(){
 	//broadcast for all players to know
 	wordPool = easyWP;
-	console.log(wordPool);
-	console.log(wordPool);
+	//console.log(wordPool);
+	//console.log(wordPool);
 	await setNextWord();
 	await broadcast(word, true, null);
 	startTimer();
