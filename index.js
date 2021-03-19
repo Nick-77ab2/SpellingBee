@@ -223,11 +223,8 @@ wsServer.on('connection', async function (ws){
 
 	currentPlayers[ws] = ""; //placeholder
 	console.log(Object.keys(currentPlayers).length);
-	if (Object.keys(currentPlayers).length == maxPlayers){
-		await startGameSession();
-	}
 	
-	ws.on('message', function (message){
+	ws.on('message', async function (message){
 		console.log('received: %s from %s', message);
 		let command = JSON.parse(message);
 		var data = {};
@@ -288,6 +285,9 @@ wsServer.on('connection', async function (ws){
 			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
+			if (Object.keys(currentPlayers).length == 1){
+				await startGameSession();
+			}
 		}
 		ws.send(JSON.stringify(data)); 
 	});
@@ -302,7 +302,7 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
-	await getWordPool(difficulty);
+	await getWordPool("easy");
 	console.log(wordPool);
 	await setNextWord();
 	broadcast(word, true, null);
@@ -371,10 +371,10 @@ function getWordPool(difficulty){
 				]).toArray()
 					.then(function (data) {
 						data.forEach(function (value, index) {
-							wp.push(value.word);
+							wordPool.push(value.word);
 						});
 						//console.log(wordPool);
-						resolve(wp);
+						resolve("resolved");
 					})
 					.catch(function (error) {
 						console.log("error");
@@ -386,7 +386,7 @@ function getWordPool(difficulty){
 function setNextWord(){
 	return new Promise (function(resolve){
 		word = wordPool.shift();
-		
+		console.log(word);
 		//get data features
 		var options = {
 		  method: 'GET',
@@ -432,5 +432,7 @@ function setNextWord(){
 			console.log(error);
 			
 		});
+		console.log(definition);
+		console.log(exampleSentence);
 	});
 }
