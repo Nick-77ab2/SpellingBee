@@ -214,7 +214,7 @@ server.listen(8080, function () {
   console.log('Listening on http://localhost:8080/');
 });
 
-wsServer.on('connection', function (ws){
+wsServer.on('connection', async function (ws){
 	if (Object.keys(currentPlayers).length > maxPlayers){
 		ws.send(JSON.stringify({type: "broadcast", data: `maximum amount of players (${maxPlayers} players) reached, no more connection will be allowed`}));
 		ws.terminate();
@@ -224,7 +224,7 @@ wsServer.on('connection', function (ws){
 	console.log(Object.keys(currentPlayers).length);
 	currentPlayers[ws] = ""; //placeholder
 	if (Object.keys(currentPlayers).length == maxPlayers){
-		setTimeout(startGameSession,2000);
+		await startGameSession();
 	}
 	//broadcast whenever new player join
 	
@@ -295,6 +295,7 @@ wsServer.on('connection', function (ws){
 
 	ws.on('close', function () {
 		broadcast(`Player ${currentPlayers[ws]} has disconnected.`);
+		delete currentPlayers[ws];
 	});
 });
 
@@ -304,10 +305,13 @@ async function startGameSession(){
 	//broadcast for all players to know
 	await getWordPool(difficulty);
 	console.log(wordPool);
-	setNextWord();
-	broadcast(word, true, null);
+	await setNextWord();
+	await broadcast(word, true, null);
 	startTimer();
 	console.log("game start");
+	return new Promise (function (resolve){
+		resolve("resolved");
+	});
 }
 
 function startTimer(){
@@ -342,9 +346,10 @@ function broadcast(message, isNewWord = false, userid = ""){
 	}
 	
 	wsServer.clients.forEach(function each(client){
-		if (client.readyState === websocket.OPEN) {
-			client.send(JSON.stringify(data));
+		while (client.readyState !== websocket.OPEN) {
+			continue;
 		}
+		client.send(JSON.stringify(data));
 	});
 }
 
@@ -379,7 +384,7 @@ function getWordPool(difficulty){
 	});
 }
 
-function setNextWord(userid){
+function setNextWord(){
 	word = wordPool.shift();
 	
 	//get data features
@@ -387,7 +392,7 @@ function setNextWord(userid){
 	  method: 'GET',
 	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
 	  headers: {
-		'x-rapidapi-key': '3f616d31e1mshb18981600a15616p1c8930jsn55578da4e7b8',
+		'x-rapidapi-key': '9911185b87msh3626b8edbef5d2fp18ab6djsn1f010e49de4d',
 		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
 	  }
 	};
@@ -401,7 +406,7 @@ function setNextWord(userid){
 			error.example = true;
 		}
 		
-		if (response.data.results[0].defintion == null) {
+		if (response.data.results[0].definition == null) {
 			isError = true;
 			error.defintion =  true;
 		}
@@ -423,15 +428,7 @@ function setNextWord(userid){
 			throw error;
 		}
 	}).catch(function (error) {
-		if (error.definition){
-			definition = "not available";
-			console.log(`no definition for word '${word}' available`);
-		}
-		
-		if (error.example){
-			exampleSentence = "not available";
-			console.log(`no example sentence for word '${word}' available`);
-		}
+		console.log(error);
 		
 	});
 }
