@@ -184,34 +184,8 @@ app.post('/login', function(req, res){
 		});
 	});
 });
-//<==================GET WORDPOOL==================>
-app.get('/getwords', function(req, res){
-  console.log("I HAVE CONNECTED");
-  let level=req.query['level'];
-  console.log(level);
-  var wordPool=[];
-	let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
-	client.connect(function (error){
-		const wordsCollection = client.db('spelling_bee').collection('words');
-		// randomly grab from database
-		wordsCollection.aggregate([
-				{ $match: { "difficulty": level } },
-				{ $sample: { size: 10 } },
-				{ $project: { "word": 1, "_id": 0 } },
-			]).toArray()
-				.then(function (data) {
-					data.forEach(function (value, index) {
-						wordPool.push(value.word);
-					});
-				  console.log(wordPool);
-				})
-				.catch(function (error) {
-					console.log("error:", error);
-				});
-	});
-//console.log(wordPool);
-return res.status(200).json(wordPool);
-});
+
+
 // PUT and DELETE (User update and delete) FUNCTIONS COMING
 // WEBSITE: https://zellwk.com/blog/crud-express-mongodb/
 
@@ -239,10 +213,6 @@ const wsServer = new websocket.Server({
 server.listen(8080, function () {
   console.log('Listening on http://localhost:8080/');
 });
-
-let easyWP = getWordPool("easy");
-let mediumWP = getWordPool("medium");
-let hardWP = getWordPool("hard");
 
 wsServer.on('connection', async function (ws){
 	if (Object.keys(currentPlayers).length > maxPlayers){
@@ -307,10 +277,10 @@ wsServer.on('connection', async function (ws){
 			//only called once when the connection is made, so can act as a handler for broadcasting new players
 			data.type = "gameData";
 			if (maxPlayers == 1) {// starting value, must be played with at least 2
-				wordPool = command.wordPool; // then set it
+				difficulty = command.level; // then set it
 				maxPlayers = parseInt(command.playerCount);
 				console.log(maxPlayers);
-				console.log(wordPool);
+				console.log(difficulty);
 			}
 			
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
@@ -332,11 +302,10 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
-	//wordPool = easyWP;
-	//console.log(wordPool);
-	//console.log(wordPool);
+	await getWordPool(difficulty);
+	console.log(wordPool);
 	await setNextWord();
-	await broadcast(word, true, null);
+	broadcast(word, true, null);
 	startTimer();
 	console.log("game start");
 	return new Promise (function (resolve){
@@ -391,6 +360,7 @@ function getWordPool(difficulty){
 	return new Promise(function(resolve) {
 		let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
 		let level = difficulty;
+		let wp = [];
 		client.connect(function (error){
 			const wordsCollection = client.db('spelling_bee').collection('words');
 			// randomly grab from database
@@ -401,10 +371,10 @@ function getWordPool(difficulty){
 				]).toArray()
 					.then(function (data) {
 						data.forEach(function (value, index) {
-							wordPool.push(value.word);
+							wp.push(value.word);
 						});
 						//console.log(wordPool);
-						resolve(wordPool);
+						resolve(wp);
 					})
 					.catch(function (error) {
 						console.log("error");
@@ -414,50 +384,53 @@ function getWordPool(difficulty){
 }
 
 function setNextWord(){
-	word = wordPool.shift();
-	
-	//get data features
-	var options = {
-	  method: 'GET',
-	  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
-	  headers: {
-		'x-rapidapi-key': '9911185b87msh3626b8edbef5d2fp18ab6djsn1f010e49de4d',
-		'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
-	  }
-	};
+	return new Promise (function(resolve){
+		word = wordPool.shift();
+		
+		//get data features
+		var options = {
+		  method: 'GET',
+		  url: `https://wordsapiv1.p.rapidapi.com/words/${word}`,
+		  headers: {
+			'x-rapidapi-key': '9911185b87msh3626b8edbef5d2fp18ab6djsn1f010e49de4d',
+			'x-rapidapi-host': 'wordsapiv1.p.rapidapi.com'
+		  }
+		};
 
-	axios.request(options).then(function (response) {
-		let error = {definition: false, example: false};
-		let isError = false;
-		if (response.data.results == null){
-			isError = true;
-			error.defintion =  true;
-			error.example = true;
-		}
-		
-		if (response.data.results[0].definition == null) {
-			isError = true;
-			error.defintion =  true;
-		}
-		
-		if (response.data.results[0].examples == null){
-			isError = true;
-			error.example =  true;
-		}
-		
-		if (!error.defintion){
-			definition = response.data.results[0].definition;
-		}
-		
-		if (!error.example){
-			exampleSentence = response.data.results[0].examples[0];
-		}
-		
-		if (isError){
-			throw error;
-		}
-	}).catch(function (error) {
-		console.log(error);
-		
+		axios.request(options).then(function (response) {
+			let error = {definition: false, example: false};
+			let isError = false;
+			if (response.data.results == null){
+				isError = true;
+				error.defintion =  true;
+				error.example = true;
+			}
+			
+			if (response.data.results[0].definition == null) {
+				isError = true;
+				error.defintion =  true;
+			}
+			
+			if (response.data.results[0].examples == null){
+				isError = true;
+				error.example =  true;
+			}
+			
+			if (!error.defintion){
+				definition = response.data.results[0].definition;
+			}
+			
+			if (!error.example){
+				exampleSentence = response.data.results[0].examples[0];
+			}
+			
+			if (isError){
+				throw error;
+			}
+			resolve("resolved");
+		}).catch(function (error) {
+			console.log(error);
+			
+		});
 	});
 }

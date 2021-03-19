@@ -19,24 +19,9 @@ let playerJoinText = document.getElementById("playerJoin");
 let playerJoin = document.getElementById("text_popup")
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
-var wordPool=[];
 
-
-function fetchData(){
-  fetch(`/getwords?level=${level}`).then(function(response){
-  return response.json();
-  }).then(function(data){
-    wordPool=data.slice(0);
-    console.log(wordPool);
-    url = `wss://${location.host}` //url of server here
-    console.log(url);
-    var connection;
-    connection = new WebSocket(url);
-  }).catch(function(error){
-    console.log("error:", error);
-  });
-}
-fetchData();
+url = `ws://${location.host}`;
+var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
 connection.onopen = function() {
@@ -45,7 +30,7 @@ connection.onopen = function() {
   console.log(playerCount);
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
-  sendGameData(name,wordPool,playerCount);
+  sendGameData(name,level,playerCount);
 };
 
 //${userid} has joined the game.
@@ -102,9 +87,9 @@ connection.onmessage = function(message) {
       break;
     case "gameData":
       console.log(data);
-      console.log(data.playerCount);
-      console.log(data.playerName);
-      console.log(data.level);
+      console.log(data.data.playerCount);
+      console.log(data.data.playerName);
+      console.log(data.data.level);
       
     default:
       console.log("something went wrong");
@@ -255,11 +240,11 @@ function sendReplayRequest() {
   connection.send(JSON.stringify(command));
 }
 
-function sendGameData(name, words, count){
+function sendGameData(name, level, count){
   var command = {
     type: "gameData",
     playerName: name,
-    wordPool: words,
+    level: level,
     playerCount: count
   }
   connection.send(JSON.stringify(command));
