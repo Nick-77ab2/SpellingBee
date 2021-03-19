@@ -7,6 +7,7 @@ var wordSentence;
 let currentLevel = document.getElementById("currentLevel");
 var level;
 var name;
+var theTimer;
 var playerCount;
 var utterWord;
 var userid;
@@ -27,7 +28,6 @@ var connection = new WebSocket(url);
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
   playerCount = localStorage.getItem("playerCount");
-  console.log(playerCount);
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
   sendGameData(name,level,playerCount);
@@ -43,8 +43,9 @@ connection.onmessage = function(message) {
     case "newWord":
       wordsFinished+=1;
       if(data.userid!=null){
-          userid=data.userid;
-          gainedPoints.textContent = '${userid} has correctly spelled the word.';
+        userid=data.userid;
+        gainedPoints.textContent = `${userid} has correctly spelled the word.`;
+        userid=null;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
       }
@@ -61,10 +62,12 @@ connection.onmessage = function(message) {
       getExampleSentence();
       break;
     case "exampleSen":
-      startTimer();
       wordSentence = data.data;
+      console.log(wordSentence);
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       utterWord = new SpeechSynthesisUtterance(word);
+      document.getElementById('timer').innerHTML = 000 + ":" + 31;
+      startTimer();
       break;
     case "answerCheck":
       let isCorrect = data.data;
@@ -80,8 +83,7 @@ connection.onmessage = function(message) {
       break;
     case "broadcast":
       broadcastValue=data.data;
-      userid=data.userid;
-      playerJoinText.textContent = '${userid} has joined the game.';
+      playerJoinText.textContent = broadcastValue;
       playerJoin.style.visibility = "visible";
       setTimeout(() => { playerJoin.style.visibility = "hidden" }, 2000);
       break;
@@ -146,7 +148,8 @@ function startTimer() {
     return null;
   }
   document.getElementById('timer').innerHTML = m + ":" + s;
-  setTimeout(startTimer(), 1000);
+  if()
+  setTimeout(startTimer, 1000);
 }
 
 function checkSecond(sec) {
