@@ -144,7 +144,7 @@ function startTimer() {
   if (s == 59) {
     m = m - 1;
   }
-  if (m == 0 && s == "00") {
+  if (m == 0 && s == "00" || alreadyCorrect) {
     document.getElementById('timer').innerHTML = m + ":" + s;
     return null;
   }
