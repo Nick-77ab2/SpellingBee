@@ -224,7 +224,7 @@ wsServer.on('connection', function (ws){
 	console.log(Object.keys(currentPlayers).length);
 	currentPlayers[ws] = ""; //placeholder
 	if (Object.keys(currentPlayers).length == maxPlayers){
-		startGameSession();
+		setTimeout(startGameSession,2000);
 	}
 	//broadcast whenever new player join
 	
