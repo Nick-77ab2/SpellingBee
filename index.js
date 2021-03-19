@@ -300,9 +300,9 @@ wsServer.on('connection', async function (ws){
 	});
 
 	ws.on('close', function () {
-		broadcast(`Player ${currentPlayers[ws]} has disconnected.`);
 		for (var x in currentPlayers){
 			if (currentPlayers[x].connection == ws){
+				broadcast(`Player ${currentPlayers[x].name} has disconnected.`);
 				delete currentPlayers[x];
 				break;
 			}
