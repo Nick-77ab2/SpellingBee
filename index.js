@@ -308,7 +308,7 @@ async function startGameSession(){
 	//broadcast for all players to know
 	wordPool = easyWP;
 	console.log(wordPool);
-	console.log(testWP);
+	console.log(wordPool);
 	await setNextWord();
 	await broadcast(word, true, null);
 	startTimer();
