@@ -17,7 +17,7 @@ var wordsFinished=-1;
 let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
 let playerJoinText = document.getElementById("playerJoin");
-let playerJoin = document.getElementById("text_popup")
+let playerJoin = document.getElementById("text_popup");
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
 
@@ -144,12 +144,11 @@ function startTimer() {
   if (s == 59) {
     m = m - 1;
   }
-  if (m == 0 && s == "00") {
+  if (m == 0 && s == "00" || alreadyCorrect) {
     document.getElementById('timer').innerHTML = m + ":" + s;
     return null;
   }
   document.getElementById('timer').innerHTML = m + ":" + s;
-  if()
   setTimeout(startTimer, 1000);
 }
 
