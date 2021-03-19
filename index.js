@@ -199,7 +199,7 @@ let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
 let maxPlayers = 1;
 let availableDiff = ["easy", "medium", "hard"];
-const time = 5000;
+const time = 31000;
 let timer;
 
 wordPool = [];
@@ -320,7 +320,7 @@ function startTimer(){
 		if (wordPool.length != 0){
 			startTimer();
 		}
-	}, 1000);
+	}, time);
 }
 
 function stopTimer(){
