@@ -307,10 +307,10 @@ wsServer.on('connection', async function (ws){
 			//only called once when the connection is made, so can act as a handler for broadcasting new players
 			data.type = "gameData";
 			if (maxPlayers == 1) {// starting value, must be played with at least 2
-				difficulty = command.level; // then set it
+				wordPool = command.wordPool; // then set it
 				maxPlayers = parseInt(command.playerCount);
 				console.log(maxPlayers);
-				console.log(difficulty);
+				console.log(wordPool);
 			}
 			
 			currentPlayers[ws] = command.playerName; //TODO: do something with this data
@@ -332,7 +332,7 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
-	wordPool = easyWP;
+	//wordPool = easyWP;
 	//console.log(wordPool);
 	//console.log(wordPool);
 	await setNextWord();
