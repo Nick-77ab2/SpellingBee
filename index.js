@@ -202,6 +202,7 @@ let availableDiff = ["easy", "medium", "hard"];
 const time = 31000;
 let timer;
 let userCount = 0;
+let isStarting = false;
 
 wordPool = [];
 
@@ -293,7 +294,7 @@ wsServer.on('connection', async function (ws){
 			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
-			if (Object.keys(currentPlayers).length == maxPlayers){
+			if (Object.keys(currentPlayers).length == maxPlayers && !isStarting){
 				await startGameSession();
 			} else {
 				console.log("not enough " + Object.keys(currentPlayers).length);
@@ -320,6 +321,7 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
+	isStarting = true;
 	await getWordPool(difficulty);
 	console.log(wordPool);
 	await setNextWord();
@@ -346,6 +348,7 @@ function stopTimer(){
 }
 
 function closeGameSession(){
+	isStarting = false;
 	wordPool = [];
 	maxPlayers = 1;//impossible to play with 1 => best value to reset
 	difficulty = "" //mongoDB would return nothing
