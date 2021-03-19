@@ -1,11 +1,8 @@
 
 //Page 3 will connect to the Websocket server and most of the action will go on in there.
 var alreadyCorrect = false;
-var wordTest = "testing";
 var word;
-var wordDefinitionTest = "To do something in a way that may break it";
 var wordDefinition;
-var wordSentenceTest = "I was testing the lawnmower yesterday";
 var wordSentence;
 let currentLevel = document.getElementById("currentLevel");
 var level;
@@ -18,7 +15,9 @@ var utterSentence;
 var wordsFinished=-1;
 let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
-
+let playerJoinText = document.getElementById("playerJoin");
+let playerJoin = document.getElementById("text_popup")
+document.getElementById('timer').innerHTML = 00 + ":" + 31;
 url = `wss://${location.host}` //url of server here
 console.log(url);
 var connection = new WebSocket(url);
@@ -35,22 +34,25 @@ connection.onopen = function() {
   sendGameData(name,level,playerCount);
 };
 
-
+//${userid} has joined the game.
 //<===========RECIEVE DATA FROM WEBSOCKET============>
 connection.onmessage = function(message) {
   data = JSON.parse(message.data);
   console.log(message);
+  console.log(data.data)
   switch (data.type) {
     case "newWord":
       wordsFinished+=1;
       if(data.userid!=null){
           userid=data.userid;
-          //insert thing to push this out, yea
+          gainedPoints.textContent = '${userid} has correctly spelled the word.';
+        gainedPoints.style.visibility = "visible";
+        setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
       }
       if(wordsFinished!=10){
         word = data.data;
-        console.log(word);
         utterWord = new SpeechSynthesisUtterance(word);
+        document.getElementById('timer').innerHTML = 00 + ":" + 31;
         getDefinition();
       }
       break;
@@ -61,28 +63,28 @@ connection.onmessage = function(message) {
       getExampleSentence();
       break;
     case "exampleSen":
+      startTimer();
       wordSentence = data.data;
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
-      console.log(data.data);
-      document.getElementById('timer').innerHTML = 00 + ":" + 31;
-      startTimer();
       break;
     case "answerCheck":
       let isCorrect = data.data;
       alreadyCorrect = isCorrect; //set alreadyCorrect so user can't constantly send data.
       if (isCorrect) {
-        let test = theScore.textContent;
+        let userPoints = theScore.textContent;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
-        test = parseInt(test);
-        test += 10;
-        theScore.textContent = test;
-        console.log(data.data);
+        userPoints = parseInt(userPoints);
+        userPoints += 10;
+        theScore.textContent = userPoints;
       }
       break;
     case "broadcast":
-      console.log(data.data);
       broadcastValue=data.data;
+      userid=data.userid;
+      playerJoinText.textContent = '${userid} has joined the game.';
+      playerJoin.style.visibility = "visible";
+      setTimeout(() => { playerJoin.style.visibility = "hidden" }, 2000);
       break;
     case "gameData":
       console.log(data);
