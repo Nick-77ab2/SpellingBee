@@ -280,13 +280,20 @@ wsServer.on('connection', async function (ws){
 				console.log(difficulty);
 			}
 			
-			currentPlayers[ws] = command.playerName; //TODO: do something with this data
+			currentPlayers[ws.origin] = command.playerName;
 			console.log(currentPlayers[ws]);
 			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
-			if (Object.keys(currentPlayers).length == 1){
+			if (Object.keys(currentPlayers).length == maxPlayers){
+				console.log(maxPlayers)
+				console.log(currentPlayers);
 				await startGameSession();
+			} else {
+				console.log("not enough " + Object.keys(currentPlayers).length);
+				console.log(currentPlayers)
+				console.log(typeof maxPlayers);
+				console.log(maxPlayers);
 			}
 		}
 		ws.send(JSON.stringify(data)); 
@@ -302,7 +309,7 @@ wsServer.on('connection', async function (ws){
 
 async function startGameSession(){
 	//broadcast for all players to know
-	await getWordPool("easy");
+	await getWordPool(difficulty);
 	console.log(wordPool);
 	await setNextWord();
 	broadcast(word, true, null);

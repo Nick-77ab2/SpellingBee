@@ -20,7 +20,7 @@ let playerJoin = document.getElementById("text_popup")
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
 
-url = `ws://${location.host}`;
+url = `wss://${location.host}`;
 var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
