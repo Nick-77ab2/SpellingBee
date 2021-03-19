@@ -293,6 +293,7 @@ wsServer.on('connection', async function (ws){
 			console.log(currentPlayers[userCount]);
 			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
+			name = currentPlayers[userCount].name;
 			broadcast(`Player ${name} joined`);
 			if (Object.keys(currentPlayers).length == maxPlayers && !isStarting){
 				await startGameSession();
