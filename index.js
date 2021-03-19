@@ -315,7 +315,12 @@ async function startGameSession(){
 
 function startTimer(){
 	timer = setTimeout(async function(){
-	}, time);
+		await setNextWord();
+		broadcast(word, true, null);
+		if (wordPool.length != 0){
+			startTimer();
+		}
+	}, 1000);
 }
 
 function stopTimer(){
