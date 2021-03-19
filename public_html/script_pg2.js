@@ -64,7 +64,7 @@ let btnLevel = document.getElementById("btn_level");
 let textInput = document.getElementById("input_number");
 
 btnLevel.addEventListener("click", function () {
-  if (textInput.value !== "" && Number(textInput.value) != 0) {
+  if (textInput.value !== "" && Number(textInput.value) >1) {
     localStorage.setItem("playerCount", textInput.value);
     window.location.href = "./page3.html";
   } else {
