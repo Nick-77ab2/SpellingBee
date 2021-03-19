@@ -340,6 +340,7 @@ function startTimer(){
 		broadcast(word, true, null);
 		if (wordPool.length != 0){
 			startTimer();
+			closeGameSession();
 		}
 	}, time);
 }
@@ -353,6 +354,9 @@ function closeGameSession(){
 	wordPool = [];
 	maxPlayers = 1;//impossible to play with 1 => best value to reset
 	difficulty = "" //mongoDB would return nothing
+	wsServer.clients.forEach(function each(client){
+		client.terminate();
+	}
 	clearTimeout(timer);
 }
 
