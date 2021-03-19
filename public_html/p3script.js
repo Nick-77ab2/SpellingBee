@@ -149,7 +149,6 @@ function startTimer() {
     return null;
   }
   document.getElementById('timer').innerHTML = m + ":" + s;
-  if()
   setTimeout(startTimer, 1000);
 }
 
