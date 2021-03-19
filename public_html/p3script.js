@@ -20,33 +20,30 @@ let playerJoin = document.getElementById("text_popup")
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
 var wordPool=[];
-
-
-function fetchData(){
+var connection;
+url = `wss://${location.host}` //url of server here
+function fetchData(connection){
   fetch(`/getwords?level=${level}`).then(function(response){
   return response.json();
   }).then(function(data){
-    wordPool=data.slice(0);
+    console.log(data);
+    wordPool=data['words'];
     console.log(wordPool);
-    url = `wss://${location.host}` //url of server here
-    console.log(url);
-    var connection;
     connection = new WebSocket(url);
+    connection.onopen = function() {
+      console.log('successfully connected to ' + url);
+      playerCount = localStorage.getItem("playerCount");
+      console.log(playerCount);
+      name = localStorage.getItem("username");
+      currentLevel.textContent = level;
+      sendGameData(name,wordPool,playerCount);
+    };
   }).catch(function(error){
     console.log("error:", error);
   });
 }
-fetchData();
-
+fetchData(connection);
 //<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
-connection.onopen = function() {
-  console.log('successfully connected to ' + url);
-  playerCount = localStorage.getItem("playerCount");
-  console.log(playerCount);
-  name = localStorage.getItem("username");
-  currentLevel.textContent = level;
-  sendGameData(name,wordPool,playerCount);
-};
 
 //${userid} has joined the game.
 //<===========RECIEVE DATA FROM WEBSOCKET============>

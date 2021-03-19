@@ -203,14 +203,12 @@ app.get('/getwords', function(req, res){
 					data.forEach(function (value, index) {
 						wordPool.push(value.word);
 					});
-				  console.log(wordPool);
+				  return res.status(200).json({words: wordPool});
 				})
 				.catch(function (error) {
 					console.log("error:", error);
 				});
 	});
-//console.log(wordPool);
-return res.status(200).json(wordPool);
 });
 // PUT and DELETE (User update and delete) FUNCTIONS COMING
 // WEBSITE: https://zellwk.com/blog/crud-express-mongodb/
