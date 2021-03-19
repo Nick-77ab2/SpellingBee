@@ -19,23 +19,19 @@ var wordsFinished=-1;
 let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
 
-//<==========GRAB LEVEL FROM LOCALSTORAGE==============>
-window.onload = function() {
+url = `wss://${location.host}` //url of server here
+console.log(url);
+var connection = new WebSocket(url);
+
+//<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
+
+connection.onopen = function() {
+  console.log('successfully connected to ' + url);
   level = localStorage.getItem("levelNumber");
   playerCount = localStorage.getItem("playerCount");
   console.log(playerCount);
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
-};
-
-url = `wss://${location.host}` //url of server here
-console.log(url);
-var connection = new WebSocket(url);
-
-//<=========LOG CONNECTION AND SEND THE LEVEL IMMEDIATELY=============>
-
-connection.onopen = function() {
-  console.log('successfully connected to ' + url);
   sendGameData(name,level,playerCount);
 };
 
@@ -53,6 +49,7 @@ connection.onmessage = function(message) {
       }
       if(wordsFinished!=10){
         word = data.data;
+        console.log(word);
         utterWord = new SpeechSynthesisUtterance(word);
         getDefinition();
       }
@@ -88,6 +85,7 @@ connection.onmessage = function(message) {
       broadcastValue=data.data;
       break;
     case "gameData":
+      console.log(data);
       console.log(data.playerCount);
       console.log(data.playerName);
       console.log(data.level);
@@ -129,6 +127,7 @@ let hideMeaning = document.getElementById("hideMeaning");
 hideMeaning.addEventListener("click", function() {
   popUp.style.visibility = "hidden";
 });
+
 
 
 //<=============found on codepen and re-written to work to our needs================>

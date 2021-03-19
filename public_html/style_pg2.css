@@ -2,9 +2,9 @@ body {
 	background-color: #ffe87c;
 }
 .pg2_center {
-	display: grid;
+	/*display: grid;
 	grid-template-columns: 50% 50%;
-	grid-template-rows: 20% 70%;
+	grid-template-rows: 20% 70%;*/
 	margin: auto;
 	width: 100%;
 	height: 99vh;
@@ -77,13 +77,9 @@ body {
 	color: #492103;
 }
 
-.page_two_pop_up {
-	position: relative;
-	text-align: center;
-}
 
 .popup {
-  position: absolute;
+  position: fixed;
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -91,15 +87,24 @@ body {
 	width: 70%;
 	height: 40%;
 	margin: auto;
-	background: white;
+	background-color: rgba(255, 255, 255, 0.767);
 	border-radius: 15px;
   visibility: collapse;
+  text-align: center;
 }
 
 .text_enter {
-	padding-top: 3%;
-	font-size: 24px;
+	padding-top: 50px;
+	font-size: 21px;
 	font-weight: bold;
+  background-image: url("./themes/images/custom/page3-13.png");
+	background-size: 430px;
+	width: 430px;
+	height: 70px;
+	border: 1px solid #ff000000;
+	background-repeat: no-repeat;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .input_number {
@@ -127,22 +132,14 @@ body {
 
 .img_button_close {
 	position: absolute;
-	right: -11%;
-	top: -8%;
+	right: -5%;
+	top: -5%;
 	width: 7vw;
 	height: 5vh;
 	cursor: pointer;
 }
 
-/*.levels > *{
-  display: inline-block;
-    width: 30%;
-    height: 30%;
-  vertical-align: middle; 
-}
-.level1{
-  padding-left:5%;
-}*/
+
 
 .footer {
 	position: absolute;

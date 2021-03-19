@@ -45,8 +45,7 @@ header {
 	display: inline-grid;
 	margin-top: 4%;
 	width: 90%;
-	height: 80%;
-	background: white;
+	background: rgba(255, 255, 255, 0.651);
 	border-radius: 20px;
 }
 
@@ -98,7 +97,7 @@ header {
 	padding: 1vh 1.5vw;
 	font-weight: bold;
 	border-radius: 15px;
-	border: 2px solid black;
+	border: 1px solid #00000000;
 	box-shadow: 5px 10px 20px rgba(240, 179, 13, 0.4);
 }
 
@@ -133,7 +132,7 @@ header {
 
 .show_meaning {
 	position: absolute;
-	top: 24%;
+	top: 25px;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
@@ -144,8 +143,7 @@ header {
 
 /* IMAGE*/
 .img_size {
-	width: 5vw;
-	height: 6vh;
+	width: 4vw;
 }
 
 .main_game {
@@ -217,8 +215,7 @@ header {
 }
 
 .img_button {
-	width: 7vw;
-	height: 8vh;
+	width: 4vw;
 }
 
 .btn_transparent {
@@ -236,7 +233,7 @@ header {
 
 .grid-popup {
 	display: grid;
-	grid-template-rows: 50% 20%;
+	grid-template-rows: 30% 20%;
 	grid-template-columns: 100%;
 	height: 100vh;
 }
@@ -259,22 +256,28 @@ header {
 /* POPUP */
 .img_button_close {
 	position: absolute;
-	right: 68%;
+	right: 70%;
 	top: 16%;
-	width: 7vw;
-	height: 5vh;
+	width: 40px;
+	cursor: pointer;
+}
+.img_button_close1 {
+	position: absolute;
+	right: 70%;
+	top: 48%;
+	width: 40px;
 	cursor: pointer;
 }
 
 .img_level {
 	display: block;
 	margin: 0 auto;
-	width: 18vw;
-	height: 12vh;
+	height: 55px;
 }
 
 .text_meaning {
 	font-size: 1.5em;
+  padding-bottom: 5px;
 }
 
 .user_answer {
