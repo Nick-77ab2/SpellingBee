@@ -201,6 +201,7 @@ let maxPlayers = 1;
 let availableDiff = ["easy", "medium", "hard"];
 const time = 31000;
 let timer;
+let userCount = 0;
 
 wordPool = [];
 
@@ -221,7 +222,8 @@ wsServer.on('connection', async function (ws){
 		return;
 	}
 
-	currentPlayers[ws] = ""; //placeholder
+
+	currentPlayers[userCount] = ""; //placeholder
 	console.log(Object.keys(currentPlayers).length);
 	
 	ws.on('message', async function (message){
@@ -280,28 +282,31 @@ wsServer.on('connection', async function (ws){
 				console.log(difficulty);
 			}
 			
-			currentPlayers[ws.origin] = command.playerName;
-			console.log(currentPlayers[ws]);
+			currentPlayers[userCount] = {name: command.playerName, connection: ws, score: 0};
+			console.log(currentPlayers[userCount]);
 			console.log();
 			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
 			broadcast(`Player ${currentPlayers[ws]} joined`);
 			if (Object.keys(currentPlayers).length == maxPlayers){
-				console.log(maxPlayers)
-				console.log(currentPlayers);
 				await startGameSession();
 			} else {
 				console.log("not enough " + Object.keys(currentPlayers).length);
-				console.log(currentPlayers)
+				console.log(currentPlayers + ' of ' + maxPlayers);
 				console.log(typeof maxPlayers);
-				console.log(maxPlayers);
 			}
 		}
 		ws.send(JSON.stringify(data)); 
+		userCount++;
 	});
 
 	ws.on('close', function () {
 		broadcast(`Player ${currentPlayers[ws]} has disconnected.`);
-		delete currentPlayers[ws];
+		for (var x in currentPlayers){
+			if (currentPlayers[x].connection == ws){
+				delete currentPlayers[x];
+				break;
+			}
+		}
 	});
 });
 
