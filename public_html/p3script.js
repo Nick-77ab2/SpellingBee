@@ -51,6 +51,7 @@ connection.onmessage = function(message) {
       }
       if(wordsFinished!=10){
         word = data.data;
+        alreadyCorrect=false;
         document.getElementById('timer').innerHTML = 00 + ":" + 31;
         getDefinition();
       }
