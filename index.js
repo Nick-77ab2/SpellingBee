@@ -443,10 +443,14 @@ function setNextWord(){
 			
 			if (!error.defintion){
 				definition = response.data.results[0].definition;
+			} else {
+				definition = '';
 			}
 			
 			if (!error.example){
 				exampleSentence = response.data.results[0].examples[0];
+			} else {
+				exampleSentence = '';
 			}
 			
 			if (isError){
