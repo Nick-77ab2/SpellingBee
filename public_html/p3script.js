@@ -20,7 +20,7 @@ let playerJoin = document.getElementById("text_popup")
 document.getElementById('timer').innerHTML = 00 + ":" + 31;
 level = localStorage.getItem("levelNumber");
 
-url = `ws://${location.host}`;
+url = `wss://${location.host}`;
 var connection = new WebSocket(url);
 
 //<=========LOG CONNECTION, GRAB DATA FROM LOCALSTORAGE AND SEND IT IMMEDIATELY=============>
@@ -50,7 +50,6 @@ connection.onmessage = function(message) {
       }
       if(wordsFinished!=10){
         word = data.data;
-        utterWord = new SpeechSynthesisUtterance(word);
         document.getElementById('timer').innerHTML = 00 + ":" + 31;
         getDefinition();
       }
@@ -65,6 +64,7 @@ connection.onmessage = function(message) {
       startTimer();
       wordSentence = data.data;
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
+      utterWord = new SpeechSynthesisUtterance(word);
       break;
     case "answerCheck":
       let isCorrect = data.data;
@@ -111,6 +111,7 @@ var synth = window.speechSynthesis;
 
 let wordTesting = document.getElementById("playWordTTS");
 wordTesting.addEventListener("click", function() {
+  console.log("word");
   synth.speak(utterWord);
 });
 
