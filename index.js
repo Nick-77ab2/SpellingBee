@@ -193,7 +193,7 @@ app.post('/login', function(req, res){
 
 const connectURL = `mongodb+srv://${mongo_username}:${mongo_password}@groupwork.7ykyi.mongodb.net/spelling_bee?retryWrites=true&w=majority`;
 
-let wordPool, word, exampleSentence, definition;
+let wordPool, word, exampleSentence = "", definition = "";
 let difficulty, amount;
 let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
@@ -245,7 +245,7 @@ wsServer.on('connection', function (ws){
 					break;
 				case "exampleSen":
 					data.type = "exampleSen";
-					if (definition == ""){
+					if (exampleSentence == ""){
 						data.available = false;
 					} else {
 						data.available = true;
@@ -257,6 +257,7 @@ wsServer.on('connection', function (ws){
 					data.data = "";
 					break;
 			}
+			console.log(data);
 		}
 		
 		if (command.type == "answer"){
