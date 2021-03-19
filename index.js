@@ -227,7 +227,13 @@ wsServer.on('connection', async function (ws){
 	console.log(Object.keys(currentPlayers).length);
 	
 	ws.on('message', async function (message){
-		console.log('received: %s from %s', message);
+		let name;
+		for (var x in currentPlayers){
+			if (currentPlayers[x].connection == ws){
+				name = currentPlayers[x].name;
+			}
+		}
+		console.log('received: %s from %s', message, name);
 		let command = JSON.parse(message);
 		var data = {};
 		if (command.type == "help"){
