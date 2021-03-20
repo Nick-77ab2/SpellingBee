@@ -18,29 +18,13 @@ $(document).ready(function() {
                 }).then(function(res){
                     if(res.status === 200){
                         console.log("success");
-              
+                        localStorage.setItem("username", userField);
                         window.location.pathname = '/game'
                     } else if(res.status === 401){
                         console.log("UNAUTHORIZED");
                         alert("INCORRECT USER/PASS");
                     } else {
                         console.log("server error");
-                    }
-                }).then(function(){
-                    var names = [];
-                    names.push(userField);
-                    console.log(localStorage.getItem("username"));
-                    if(localStorage.getItem("username")===null){
-                      localStorage.setItem("username", JSON.stringify(names));
-                    }
-                    else{
-                      var storedNames=JSON.parse(localStorage.getItem("username"));
-                      console.log(storedNames);
-                      for(let i=0; i<storedNames.length; i++){
-                        names.push(storedNames[i]);
-                        console.log(names[i]);
-                      }
-                      localStorage.setItem("username", JSON.stringify(names));
                     }
                 }).catch((error) => {console.log(error)});
             }
