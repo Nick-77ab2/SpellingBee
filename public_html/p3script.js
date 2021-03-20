@@ -32,7 +32,14 @@ connection.onopen = function() {
   currentLevel.textContent = level;
   sendGameData(name,level,playerCount);
 };
-
+connection.onclose = function(event) {
+    if (event.wasClean) {
+      console.log(`Closing the web socket`);
+      setTimeout(window.location.href = "./page2.html", 2000); //do we need this?
+    } else {
+      console.log('Connection failed, so cannot close the web socket');
+    }
+  };
 //${userid} has joined the game.
 //<===========RECIEVE DATA FROM WEBSOCKET============>
 connection.onmessage = function(message) {
@@ -45,14 +52,12 @@ connection.onmessage = function(message) {
       if(data.userid!=null){
         userid=data.userid;
         gainedPoints.textContent = `${userid} has correctly spelled the word.`;
-        userid=null;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
       }
       if(wordsFinished!=10){
         word = data.data;
         alreadyCorrect=false;
-        document.getElementById('timer').innerHTML = 00 + ":" + 31;
         getDefinition();
       }
       break;
@@ -146,10 +151,13 @@ function startTimer() {
   }
   if (m == 0 && s == "00" || alreadyCorrect) {
     document.getElementById('timer').innerHTML = m + ":" + s;
+    clearTimeout(startTimer);
     return null;
   }
+  else{
   document.getElementById('timer').innerHTML = m + ":" + s;
   setTimeout(startTimer, 1000);
+  }
 }
 
 function checkSecond(sec) {
@@ -273,20 +281,7 @@ function playMain() {
 
 let cancelButton = document.getElementById("cancel");
 
-//Currently the websocket doesn't work, this is code based on a model
-//if this is what is to be expected, then i will keep it.
-// this code does not work
-cancelButton.addEventListener("click", function(e) {
-  e.preventDefault();
-  //possible addition of a connection.send for notification to websocket of a closed client (if websocket doesn't already get notified)
+cancelButton.addEventListener("click", function() {
   console.log("Button close session");
   connection.close();
-  connection.onclose = function(event) {
-    if (event.wasClean) {
-      console.log(`Closing the web socket`);
-      setTimeout(window.location.href = "./page2.html", 2000); //do we need this?
-    } else {
-      console.log('Connection failed, so cannot close the web socket');
-    }
-  };
 });

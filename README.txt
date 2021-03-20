@@ -1,4 +1,3 @@
-(Your code base should contain a readme file that explains all of the steps needed to run a local version of your project.)
 
 - The user need to run the command "nodemon index.js" or "node index.js" to run our App
 - Users open the browser, then enter the address to access our app with the URL on the browser: "http://localhost:8080/"
