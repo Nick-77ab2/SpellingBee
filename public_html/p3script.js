@@ -32,6 +32,7 @@ var connection = new WebSocket(url);
 connection.onopen = function() {
   console.log('successfully connected to ' + url);
   playerCount = localStorage.getItem("playerCount");
+  console.log("THE USERNAMES ARE: " + localStorage.getItem("username"));
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
   currentlyReceiving=true;
