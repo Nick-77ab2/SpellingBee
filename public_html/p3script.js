@@ -57,9 +57,9 @@ connection.onmessage = function(message) {
         clearTimeout(startTimer);
         userid=data.userid;
         console.log("The userid: %s", userid);
-        gainedPoints.textContent = `${userid} has correctly spelled the word.`;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
+        gainedPoints.textContent = `A player has correctly spelled the word.`;
       }
       if(wordsFinished!=10){
         word = data.data;
@@ -88,6 +88,7 @@ connection.onmessage = function(message) {
     case "answerCheck":
       isCorrect = data.data;
       console.log("isCorrect: " + isCorrect + "previous Correct: " + previousCorrect + " current word: " + word + " previous word: " + previousWord);
+      gainedPoints.textContent = `A player has correctly spelled the word.`;
       if(isCorrect && previousCorrect!=isCorrect && wordsFinished==0){
           console.log("do nothing");
       }
@@ -97,6 +98,7 @@ connection.onmessage = function(message) {
         previousCorrect=isCorrect;
         previousWord=word;
         console.log("User got A word Correct")
+        gainedPoints.textContent = `You have correctly spelled the word!`;
         let userPoints = theScore.textContent;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
