@@ -22,7 +22,7 @@
     * Second row, use enters the world that he/she listen before
     * Third row, after user enter his/her answer, user click on ENTER button. If user's answer is correct, he/she will get the score; otherwise, user should answer again. You can use the HINT and MEANING button to hear the example sentence or see the definition of that word, respectively.
   + Third column, on the right side will content 4 button. We will talk from top to bottom
-    * First column, the PLAY button, when user clicks on that button, user will hear the pronunciation of that word.
+    * First column, the PLAY button, depreciated
     * Second column, the CANCEL button, when user clicks on that button, user will exit the session (therefore ending the multiplayer)
-    * Third column, the REPLAY button, the replay button will work at the end of the session to replay the level.
-    * Fourth column, the NEXT LEVEL button, the next button will move you back to page 2, the Level map. (at end of game session)
+    * Third column, the REPLAY button, depreciated.
+    * Fourth column, the NEXT LEVEL button, depreciated.
