@@ -78,7 +78,7 @@ connection.onmessage = function(message) {
       //console.log(wordSentence);
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       utterWord = new SpeechSynthesisUtterance(word);
-      document.getElementById('timer').innerHTML = 002 + ":" + 00;
+      document.getElementById('timer').innerHTML = 002 + ":" + 10;
       currentlyReceiving=false;
       if(wordsFinished==0){
       startTimer();
