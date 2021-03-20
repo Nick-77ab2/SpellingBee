@@ -1,13 +1,17 @@
 
 //Page 3 will connect to the Websocket server and most of the action will go on in there.
-var alreadyCorrect = false;
+//var alreadyCorrect;
 var word;
+var isCorrect;
+var previousCorrect = true;
 var wordDefinition;
+var previousWord;
 var wordSentence;
 let currentLevel = document.getElementById("currentLevel");
 var level;
 var name;
 var theTimer;
+var currentlyReceiving;
 var playerCount;
 var utterWord;
 var userid;
@@ -30,34 +34,35 @@ connection.onopen = function() {
   playerCount = localStorage.getItem("playerCount");
   name = localStorage.getItem("username");
   currentLevel.textContent = level;
+  currentlyReceiving=true;
   sendGameData(name,level,playerCount);
 };
-connection.onclose = function(event) {
-    if (event.wasClean) {
-      console.log(`Closing the web socket`);
-      setTimeout(window.location.href = "./page2.html", 2000); //do we need this?
-    } else {
-      console.log('Connection failed, so cannot close the web socket');
-    }
-  };
+connection.onclose = function() {
+  console.log(`Closing the web socket`);
+  window.location.href = "./page2.html"
+
+};
 //${userid} has joined the game.
 //<===========RECIEVE DATA FROM WEBSOCKET============>
 connection.onmessage = function(message) {
   data = JSON.parse(message.data);
-  console.log(message);
-  console.log(data.data)
+ // console.log(message);
+  //console.log(data.data)
   switch (data.type) {
     case "newWord":
       wordsFinished+=1;
+      currentlyReceiving=true;
       if(data.userid!=null){
+        clearTimeout(startTimer);
         userid=data.userid;
+        console.log("The userid: %s", userid);
         gainedPoints.textContent = `${userid} has correctly spelled the word.`;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
       }
       if(wordsFinished!=10){
         word = data.data;
-        alreadyCorrect=false;
+        console.log("Recieved next word");
         getDefinition();
       }
       break;
@@ -69,16 +74,28 @@ connection.onmessage = function(message) {
       break;
     case "exampleSen":
       wordSentence = data.data;
-      console.log(wordSentence);
+      //console.log(wordSentence);
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       utterWord = new SpeechSynthesisUtterance(word);
       document.getElementById('timer').innerHTML = 000 + ":" + 31;
+      currentlyReceiving=false;
+      if(wordsFinished==0){
       startTimer();
+      previousWord=word;
+      }
       break;
     case "answerCheck":
-      let isCorrect = data.data;
-      alreadyCorrect = isCorrect; //set alreadyCorrect so user can't constantly send data.
-      if (isCorrect) {
+      isCorrect = data.data;
+      console.log("isCorrect: " + isCorrect + "previous Correct: " + previousCorrect + " current word: " + word + " previous word: " + previousWord);
+      if(isCorrect && previousCorrect!=isCorrect && wordsFinished==0){
+          console.log("do nothing");
+      }
+      else if(!isCorrect && previousCorrect!=isCorrect)
+        previousCorrect=isCorrect;
+      else if (isCorrect && ((previousCorrect!=isCorrect) || (previousCorrect==isCorrect))) {
+        previousCorrect=isCorrect;
+        previousWord=word;
+        console.log("User got A word Correct")
         let userPoints = theScore.textContent;
         gainedPoints.style.visibility = "visible";
         setTimeout(() => { gainedPoints.style.visibility = "hidden" }, 2000);
@@ -94,10 +111,10 @@ connection.onmessage = function(message) {
       setTimeout(() => { playerJoin.style.visibility = "hidden" }, 2000);
       break;
     case "gameData":
-      console.log(data);
-      console.log(data.data.playerCount);
-      console.log(data.data.playerName);
-      console.log(data.data.level);
+      //console.log(data);
+      //console.log(data.data.playerCount);
+      //console.log(data.data.playerName);
+      //console.log(data.data.level);
       
     default:
       console.log("something went wrong");
@@ -108,8 +125,10 @@ connection.onmessage = function(message) {
 let enterButton = document.getElementById("userEnter");
 enterButton.addEventListener("click", function() {
   //if true when not correct, doesn't run once it's correct once.
-  if (!alreadyCorrect) {
+  console.log(" CurrentlyRecieving: " + currentlyReceiving);
+  if (currentlyReceiving==false) {
     let userAnswer = document.getElementById("userAnswer").value;
+    console.log("userAnswer: " + userAnswer);
     sendAnswer(userAnswer);
   }
 });
@@ -119,7 +138,6 @@ var synth = window.speechSynthesis;
 
 let wordTesting = document.getElementById("playWordTTS");
 wordTesting.addEventListener("click", function() {
-  console.log("word");
   synth.speak(utterWord);
 });
 
@@ -149,7 +167,7 @@ function startTimer() {
   if (s == 59) {
     m = m - 1;
   }
-  if (m == 0 && s == "00" || alreadyCorrect) {
+  if (m == 0 && s == "00") {
     document.getElementById('timer').innerHTML = m + ":" + s;
     clearTimeout(startTimer);
     return null;
@@ -195,25 +213,7 @@ $("#playSentenceTTS").click((e)=>{
 
 //possible use of play on side if we need to repurpose it for ability to start play if less than max players.
 //only use will be before start.
-let play = document.getElementById("play");
-play.addEventListener("click", function() {
-  if (document.getElementById('timer').textContent == "")
-    playMain();
-});
 
-let replayButton = document.getElementById("replay");
-replayButton.addEventListener("click", function() {
-  if(wordsFinished==10)
-    sendReplayRequest();
-});
-
-let nextButton = document.getElementById("next");
-nextButton.addEventListener("click", function() {
-  if(wordsFinished==10){
-    sendNextConfirm();
-    window.location.href = "./page2.html";
-  }
-});
 
 /* <========================FUNCTIONS FOR GETTING INFORMATION FROM THE WEBSOCKET SERVER ================>*/
 
@@ -244,14 +244,6 @@ function sendAnswer(answer) {
   connection.send(JSON.stringify(command));
 }
 
-function sendReplayRequest() {
-  var command = {
-    type: "replay",
-    data: true
-  }
-  connection.send(JSON.stringify(command));
-}
-
 function sendGameData(name, level, count){
   var command = {
     type: "gameData",
@@ -266,15 +258,6 @@ function sendNextConfirm() {
   var command = {
     type: "nextPage",
     data: true
-  }
-  connection.send(JSON.stringify(command));
-}
-
-//possible use of play on side if we need to repurpose it for ability to start play if less than max players.
-function playMain() {
-  var command = {
-    type: "startRequest",
-    data: "start"
   }
   connection.send(JSON.stringify(command));
 }

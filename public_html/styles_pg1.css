@@ -42,7 +42,7 @@ pg2_footer{
   padding-top:25px;
 }
 
-.video_wrapper iframe {
+.video_wrapper video {
   position: absolute;
   margin: 0 auto;
   top: 0px;
