@@ -22,7 +22,7 @@ let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
 let playerJoinText = document.getElementById("playerJoin");
 let playerJoin = document.getElementById("text_popup");
-document.getElementById('timer').innerHTML = 002 + ":" + 10;
+document.getElementById('timer').innerHTML = 002 + ":" + 12;
 level = localStorage.getItem("levelNumber");
 
 url = `wss://${location.host}`;
@@ -78,7 +78,7 @@ connection.onmessage = function(message) {
       //console.log(wordSentence);
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       utterWord = new SpeechSynthesisUtterance(word);
-      document.getElementById('timer').innerHTML = 002 + ":" + 10;
+      document.getElementById('timer').innerHTML = 002 + ":" + 12;
       currentlyReceiving=false;
       if(wordsFinished==0){
       startTimer();

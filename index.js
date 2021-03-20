@@ -199,7 +199,7 @@ let currentPlayers = {};
 let userid = 0; //TODO: integrate with user logging feature
 let maxPlayers = 1;
 let availableDiff = ["easy", "medium", "hard"];
-const time = 121000;
+const time = 132000;
 let timer;
 let userCount = 0;
 let isStarting = false;
