@@ -292,7 +292,7 @@ wsServer.on('connection', async function (ws){
 			currentPlayers[userCount] = {name: command.playerName, connection: ws, score: 0};
 			console.log(currentPlayers[userCount]);
 			console.log();
-			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[ws]}
+			data.data = {level: difficulty, playerCount: maxPlayers, playerName: currentPlayers[userCount].name}
 			name = currentPlayers[userCount].name;
 			broadcast(`Player ${name} joined`);
 			if (Object.keys(currentPlayers).length == maxPlayers && !isStarting){
@@ -389,7 +389,6 @@ function getWordPool(difficulty){
 	return new Promise(function(resolve) {
 		let client = new MongoClient(connectURL, { useNewUrlParser: true, useUnifiedTopology: true });
 		let level = difficulty;
-		let wp = [];
 		client.connect(function (error){
 			const wordsCollection = client.db('spelling_bee').collection('words');
 			// randomly grab from database
