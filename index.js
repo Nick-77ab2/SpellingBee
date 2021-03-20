@@ -335,13 +335,14 @@ async function startGameSession(){
 }
 
 function startTimer(){
+	if (wordPool.length == 0){
+		closeGameSession();
+		return;
+	}
 	timer = setTimeout(async function(){
 		await setNextWord();
 		broadcast(word, true, null);
-		if (wordPool.length != 0){
-			startTimer();
-			closeGameSession();
-		}
+		startTimer();
 	}, time);
 }
 
