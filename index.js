@@ -271,7 +271,7 @@ wsServer.on('connection', async function (ws){
 				stopTimer();
 				data.data =  true;
 				await setNextWord();
-				broadcast(word, true, currentPlayers[ws]);
+				broadcast(word, true, name);
 				startTimer();
 			}
 			else {
