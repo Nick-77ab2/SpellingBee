@@ -22,7 +22,7 @@ let theScore = document.getElementById("score");
 let gainedPoints = document.getElementById("gainedPoints");
 let playerJoinText = document.getElementById("playerJoin");
 let playerJoin = document.getElementById("text_popup");
-document.getElementById('timer').innerHTML = 00 + ":" + 31;
+document.getElementById('timer').innerHTML = 002 + ":" + 10;
 level = localStorage.getItem("levelNumber");
 
 url = `wss://${location.host}`;
@@ -40,7 +40,7 @@ connection.onopen = function() {
 };
 connection.onclose = function() {
   console.log(`Closing the web socket`);
-  window.location.href = "./page2.html"
+  window.location.href = "./page2.html";
 
 };
 //${userid} has joined the game.
@@ -78,7 +78,7 @@ connection.onmessage = function(message) {
       //console.log(wordSentence);
       utterSentence = new SpeechSynthesisUtterance(wordSentence);
       utterWord = new SpeechSynthesisUtterance(word);
-      document.getElementById('timer').innerHTML = 000 + ":" + 31;
+      document.getElementById('timer').innerHTML = 002 + ":" + 00;
       currentlyReceiving=false;
       if(wordsFinished==0){
       startTimer();
