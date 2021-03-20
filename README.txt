@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> e4d5b1ce3c1ff9dd8349ec151caf7a5f061999e9
 - The user need to run the command "nodemon index.js" or "node index.js" to run our App
 - Users open the browser, then enter the address to access our app with the URL on the browser: "http://localhost:8080/"
 - The login/sign up page will display. If user have already had account, you can simply click on Log In button to login into our system. If not, user click on Sign Up button to resgister the user with 2 information (username, password, password confirm (must be the same with password))
