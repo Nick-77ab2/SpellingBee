@@ -356,7 +356,7 @@ function closeGameSession(){
 	difficulty = "" //mongoDB would return nothing
 	wsServer.clients.forEach(function each(client){
 		client.terminate();
-	}
+	});
 	clearTimeout(timer);
 }
 
